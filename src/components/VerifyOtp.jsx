@@ -1,6 +1,6 @@
 import { ShieldCheck } from 'lucide-react'
 
-const VerifyOtp = ({ email }) => {
+const VerifyOtp = ({ email, setVerified }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
