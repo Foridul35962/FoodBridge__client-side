@@ -74,17 +74,19 @@ const Login = () => {
                             )
                         }
                     </div>
-                    
+
+                    <p onClick={() => navigate('/forget-pass')} className='text-blue-600 hover:underline text-end cursor-pointer'>forget-password?</p>
+
                     <button
                         type='submit'
                         className="bg-orange-600 hover:bg-orange-700 transition-all duration-300 my-2 cursor-pointer text-white font-semibold px-2 py-2 rounded-xl">
                         Sign In
                     </button>
-                    <button
-                        className="border border-gray-300 hover:bg-gray-100 transition px-2 py-2 rounded-xl cursor-pointer">
-                        Sign Up with Google
-                    </button>
                 </form>
+                <button
+                    className="border border-gray-300 hover:bg-gray-100 transition px-2 py-2 rounded-xl cursor-pointer">
+                    Sign Up with Google
+                </button>
                 <p className='text-center'>Don't have any account?
                     <span className='text-blue-600 hover:underline cursor-pointer' onClick={() => navigate('/registration')}> Sign up</span>
                 </p>
