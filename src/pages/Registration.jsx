@@ -3,9 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { Circle, CircleCheckBig, Lock, MailIcon, PhoneCall, UserIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import VerifyOtp from '../components/VerifyOtp'
+import { useDispatch, useSelector } from 'react-redux'
+import { registration } from '../store/slice/authSlice'
+import { toast } from 'react-toastify'
 
 const Registration = () => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const {loading} = useSelector((state)=>state.auth)
     const [verified, setVerified] = useState(false)
     const [role, setRole] = useState('user')
     const [email, setEmail] = useState('')
@@ -25,7 +30,16 @@ const Registration = () => {
 
 
     const onSubmit = async (data) => {
-
+        data.role = role
+        try {
+            await dispatch(registration(data)).unwrap()
+            reset()
+            setEmail(data.email)
+            setVerified(!verified)
+            toast.success('Otp sended')
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -192,9 +206,19 @@ const Registration = () => {
                                     </div>
                                 </div>
                                 <button
-                                    type='submit'
-                                    className="bg-orange-600 hover:bg-orange-700 transition-all duration-300 my-2 cursor-pointer text-white font-semibold px-2 py-2 rounded-xl">
-                                    Sign Up
+                                    disabled={loading}
+                                    type="submit"
+                                    className={`my-2 px-4 py-2 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-300
+                                        ${loading ? "bg-orange-400 cursor-not-allowed opacity-70" : "bg-orange-600 hover:bg-orange-700 cursor-pointer"}`}
+                                >
+                                    {loading ? (
+                                        <div className='flex gap-1 items-center'>
+                                            <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                            <p>Signing Up...</p>
+                                        </div>
+                                    ) : (
+                                        "Sign Up"
+                                    )}
                                 </button>
                             </form>
                             <button
