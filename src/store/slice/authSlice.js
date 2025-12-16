@@ -110,13 +110,18 @@ export const fetchUser = createAsyncThunk(
 const initialState = {
     loading: false,
     error: null,
-    user: null
+    user: null,
+    city: null
 }
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers: {},
+    reducers: {
+        setCity: (state, action)=>{
+            state.city = action.payload
+        }
+    },
     extraReducers: (builder) => {
         //registration
         builder
@@ -149,6 +154,7 @@ const authSlice = createSlice({
             .addCase(login.pending, (state) => {
                 state.loading = true
                 state.error = null
+                state.user = null
             })
             .addCase(login.fulfilled, (state, action) => {
                 state.loading = false
@@ -215,6 +221,7 @@ const authSlice = createSlice({
         builder
             .addCase(fetchUser.pending, (state) => {
                 state.loading = true
+                state.user = null
                 state.error = null
             })
             .addCase(fetchUser.fulfilled, (state, action) => {
@@ -228,4 +235,5 @@ const authSlice = createSlice({
     }
 })
 
+export const {setCity} = authSlice.actions
 export default authSlice.reducer
