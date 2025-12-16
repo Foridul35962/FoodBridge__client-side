@@ -6,11 +6,12 @@ import ResetPass from '../components/ResetPass'
 const ForgetPass = () => {
     const [email, setEmail] = useState('')
     const [verified, setVerified] = useState(false)
+    const resetPass = true
     return (
         <div>
             {
                 !email ? <ForgetPassDesign setEmail={setEmail} /> :
-                    (!verified ? <VerifyOtp email={email} setVerified={setVerified} /> :
+                    (!verified ? <VerifyOtp email={email} setVerified={setVerified} resetPass={resetPass} /> :
                         <ResetPass email={email} />)
             }
         </div>

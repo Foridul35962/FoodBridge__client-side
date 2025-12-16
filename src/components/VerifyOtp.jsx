@@ -1,9 +1,33 @@
 import { ShieldCheck } from 'lucide-react'
+import { useDispatch, useSelector } from 'react-redux'
+import { verifyPass, verifyRegi } from '../store/slice/authSlice'
+import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
-const VerifyOtp = ({ email, setVerified }) => {
+const VerifyOtp = ({ email, setVerified, resetPass }) => {
 
-    const handleSubmit = (e) => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { loading } = useSelector((state) => state.auth)
+
+    const handleSubmit = async (e) => {
         e.preventDefault()
+        const data = {
+            email,
+            otp: e.target.otp.value
+        }
+        try {
+            if (resetPass) {
+                await dispatch(verifyPass(data)).unwrap()
+                setVerified(true)
+            } else{
+                await dispatch(verifyRegi(data)).unwrap()
+                navigate('/login')
+                toast.success('User registration successful')
+            }
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -39,6 +63,7 @@ const VerifyOtp = ({ email, setVerified }) => {
                             type="text"
                             id="otp"
                             inputMode="numeric"
+                            name='otp'
                             maxLength={6}
                             placeholder="● ● ● ● ● ●"
                             className="w-full border border-gray-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-400 outline-none rounded-xl pl-6 pr-3 py-3 text-center tracking-widest font-semibold text-lg"
@@ -53,10 +78,19 @@ const VerifyOtp = ({ email, setVerified }) => {
 
                     {/* Verify Button */}
                     <button
+                        disabled={loading}
                         type="submit"
-                        className="bg-orange-600 hover:bg-orange-700 transition-all duration-300 cursor-pointer text-white font-semibold py-3 rounded-xl"
+                        className={`my-2 px-4 py-2 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-300
+                            ${loading ? "bg-orange-400 cursor-not-allowed opacity-70" : "bg-orange-600 hover:bg-orange-700 cursor-pointer"}`}
                     >
-                        Verify Email
+                        {loading ? (
+                            <div className='flex gap-1 items-center'>
+                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <p>Verifing...</p>
+                            </div>
+                        ) : (
+                            "Verifi email"
+                        )}
                     </button>
                 </form>
             </div>

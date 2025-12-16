@@ -1,13 +1,22 @@
 import { Circle, CircleCheckBig, Lock } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
+import { resetPass } from '../store/slice/authSlice'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const ResetPass = ({ email }) => {
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { loading } = useSelector((state) => state.auth)
 
     const {
         register,
         watch,
-        handleSubmit
+        handleSubmit,
+        formState: { errors }
     } = useForm()
 
     //password validation
@@ -16,8 +25,15 @@ const ResetPass = ({ email }) => {
     const numberValidate = /^(?=.*\d)/.test(passwordValue);
     const lengthValidate = /^(?=.{8,})/.test(passwordValue);
 
-    const onSubmit = (data) => {
-
+    const onSubmit = async (data) => {
+        data.email = email
+        try {
+            await dispatch(resetPass(data)).unwrap()
+            toast.success('Password reset successfully')
+            navigate('/login')
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
     return (
@@ -90,9 +106,19 @@ const ResetPass = ({ email }) => {
                     </div>
 
                     <button
-                        type='submit'
-                        className="bg-orange-600 hover:bg-orange-700 transition-all duration-300 my-2 cursor-pointer text-white font-semibold px-2 py-2 rounded-xl">
-                        Reset Password
+                        disabled={loading}
+                        type="submit"
+                        className={`my-2 px-4 py-2 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-300
+                            ${loading ? "bg-orange-400 cursor-not-allowed opacity-70" : "bg-orange-600 hover:bg-orange-700 cursor-pointer"}`}
+                    >
+                        {loading ? (
+                            <div className='flex gap-1 items-center'>
+                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <p>Reseting Password...</p>
+                            </div>
+                        ) : (
+                            "Reset Password"
+                        )}
                     </button>
                 </form>
             </div>
