@@ -1,11 +1,17 @@
 import { Lock, MailIcon } from 'lucide-react'
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { login } from '../store/slice/authSlice'
+import { toast } from 'react-toastify'
 
 const Login = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { loading } = useSelector((state) => state.auth)
+
     const {
         register,
         handleSubmit,
@@ -13,8 +19,14 @@ const Login = () => {
     } = useForm()
 
 
-    const onSubmit = (data) => {
-
+    const onSubmit = async (data) => {        
+        try {
+            await dispatch(login(data)).unwrap()
+            toast.success('login successfully')
+            navigate('/')
+        } catch (error) {
+            toast.error(error.message)
+        }
     }
 
 
@@ -78,10 +90,21 @@ const Login = () => {
                     <p onClick={() => navigate('/forget-pass')} className='text-blue-600 hover:underline text-end cursor-pointer'>forget-password?</p>
 
                     <button
-                        type='submit'
-                        className="bg-orange-600 hover:bg-orange-700 transition-all duration-300 my-2 cursor-pointer text-white font-semibold px-2 py-2 rounded-xl">
-                        Sign In
+                        disabled={loading}
+                        type="submit"
+                        className={`my-2 px-4 py-2 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-300
+                            ${loading ? "bg-orange-400 cursor-not-allowed opacity-70" : "bg-orange-600 hover:bg-orange-700 cursor-pointer"}`}
+                    >
+                        {loading ? (
+                            <div className='flex gap-1 items-center'>
+                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <p>Signing In...</p>
+                            </div>
+                        ) : (
+                            "Sign In"
+                        )}
                     </button>
+
                 </form>
                 <button
                     className="border border-gray-300 hover:bg-gray-100 transition px-2 py-2 rounded-xl cursor-pointer">
