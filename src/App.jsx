@@ -1,19 +1,19 @@
 import React from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Registration from './pages/Registration'
 import UserLayout from './layouts/UserLayout'
 import ForgetPass from './pages/ForgetPass'
-import { fetchUser } from './store/slice/authSlice'
 import { ToastContainer } from 'react-toastify'
+import useGetCity from './hooks/UseGetCity'
+import UseGetUser from './hooks/UseGetUser'
 
 const App = () => {
 
   //fetchUser
-  const dispatch = useDispatch()
-  dispatch(fetchUser())
+  UseGetUser()
+  useGetCity()
 
 
   const router = createBrowserRouter([
