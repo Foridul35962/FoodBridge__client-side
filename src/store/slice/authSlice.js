@@ -3,9 +3,9 @@ import axios from 'axios'
 
 const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}/api/auth`
 
-export const register = createAsyncThunk(
-    'auth/register',
-    async(data, {rejectWithValue})=>{
+export const registration = createAsyncThunk(
+    'auth/registration',
+    async (data, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/register`,
                 data
@@ -19,7 +19,7 @@ export const register = createAsyncThunk(
 
 export const verifyRegi = createAsyncThunk(
     'auth/verifyRegi',
-    async (data, {rejectWithValue})=>{
+    async (data, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/verify-regi`, data)
             return res.data
@@ -31,10 +31,10 @@ export const verifyRegi = createAsyncThunk(
 
 export const login = createAsyncThunk(
     'auth/login',
-    async(data, {rejectWithValue})=>{
+    async (data, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/login`, data,
-                {withCredentials: true}
+                { withCredentials: true }
             )
             return res.data
         } catch (error) {
@@ -45,10 +45,10 @@ export const login = createAsyncThunk(
 
 export const logout = createAsyncThunk(
     'auth/logout',
-    async(_, {rejectWithValue})=>{
+    async (_, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/logout`,
-                {withCredentials: true}
+                { withCredentials: true }
             )
             return res.data
         } catch (error) {
@@ -59,7 +59,7 @@ export const logout = createAsyncThunk(
 
 export const forgetPassword = createAsyncThunk(
     'auth/forgetPassword',
-    async(data, {rejectWithValue})=>{
+    async (data, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/forget-pass`, data)
             return res.data
@@ -71,7 +71,7 @@ export const forgetPassword = createAsyncThunk(
 
 export const verifyPass = createAsyncThunk(
     'auth/verifyPass',
-    async(data, {rejectWithValue})=>{
+    async (data, { rejectWithValue }) => {
         try {
             const res = await axios.post(`${SERVER_URL}/verify-pass`, data)
             return res.data
@@ -83,9 +83,23 @@ export const verifyPass = createAsyncThunk(
 
 export const resetPass = createAsyncThunk(
     'auth/resetPass',
-    async(data, {rejectWithValue})=>{
+    async (data, { rejectWithValue }) => {
         try {
-            const res = await axios.post(`${SERVER_URL}/reset-pass`, data)
+            const res = await axios.patch(`${SERVER_URL}/reset-pass`, data)
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const fetchUser = createAsyncThunk(
+    'auth/fetchUser',
+    async (_,{rejectWithValue})=>{
+        try {
+            const res = await axios.get(`${SERVER_URL}/get-user`,
+                {withCredentials: true}
+            )
             return res.data
         } catch (error) {
             return rejectWithValue(error?.response?.data || "Something went wrong")
@@ -95,26 +109,122 @@ export const resetPass = createAsyncThunk(
 
 const initialState = {
     loading: false,
-    error: null
+    error: null,
+    user: null
 }
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
-    reducers:{},
-    extraReducers:(builder)=>{
+    reducers: {},
+    extraReducers: (builder) => {
+        //registration
         builder
-        .addCase(register.pending, (state)=>{
-            state.loading = true
-            state.error = null
-        })
-        .addCase(register.fulfilled, (state)=>{
-            state.loading = false
-        })
-        .addCase(register.rejected, (state, action)=>{
-            state.loading = false
-            state.error = action.error
-        })
+            .addCase(registration.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(registration.fulfilled, (state) => {
+                state.loading = false
+            })
+            .addCase(registration.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //verifyRegi
+        builder
+            .addCase(verifyRegi.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(verifyRegi.fulfilled, (state) => {
+                state.loading = false
+            })
+            .addCase(verifyRegi.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //login
+        builder
+            .addCase(login.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(login.fulfilled, (state, action) => {
+                state.loading = false
+                state.user = action.payload.data
+            })
+            .addCase(login.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //logout
+        builder
+            .addCase(logout.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(logout.fulfilled, (state) => {
+                state.loading = false
+                state.user = null
+            })
+            .addCase(logout.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //forgetPassword
+        builder
+            .addCase(forgetPassword.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(forgetPassword.fulfilled, (state) => {
+                state.loading = false
+            })
+            .addCase(forgetPassword.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //verifyPass
+        builder
+            .addCase(verifyPass.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(verifyPass.fulfilled, (state) => {
+                state.loading = false
+            })
+            .addCase(verifyPass.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //resetPass
+        builder
+            .addCase(resetPass.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(resetPass.fulfilled, (state) => {
+                state.loading = false
+            })
+            .addCase(resetPass.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
+        //fetchUser
+        builder
+            .addCase(fetchUser.pending, (state) => {
+                state.loading = true
+                state.error = null
+            })
+            .addCase(fetchUser.fulfilled, (state, action) => {
+                state.loading = false
+                state.user = action.payload.data
+            })
+            .addCase(fetchUser.rejected, (state, action) => {
+                state.loading = false
+                state.error = action.error
+            })
     }
 })
 
