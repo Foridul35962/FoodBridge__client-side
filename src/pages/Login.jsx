@@ -108,10 +108,6 @@ const Login = () => {
                     </button>
 
                 </form>
-                <button
-                    className="border border-gray-300 hover:bg-gray-100 transition px-2 py-2 rounded-xl cursor-pointer">
-                    Sign Up with Google
-                </button>
                 <p className='text-center'>Don't have any account?
                     <span className='text-blue-600 hover:underline cursor-pointer' onClick={() => navigate('/registration')}> Sign up</span>
                 </p>

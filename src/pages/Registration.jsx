@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 const Registration = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const {loading} = useSelector((state)=>state.auth)
+    const { loading } = useSelector((state) => state.auth)
     const [verified, setVerified] = useState(false)
     const [role, setRole] = useState('user')
     const [email, setEmail] = useState('')
@@ -221,10 +221,6 @@ const Registration = () => {
                                     )}
                                 </button>
                             </form>
-                            <button
-                                className="border border-gray-300 hover:bg-gray-100 transition px-2 py-2 rounded-xl cursor-pointer">
-                                Sign Up with Google
-                            </button>
                             <p className='text-center'>Already have an account?
                                 <span className='text-blue-600 hover:underline cursor-pointer' onClick={() => navigate('/login')}> Sign in</span>
                             </p>
