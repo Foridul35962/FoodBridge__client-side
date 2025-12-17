@@ -15,6 +15,7 @@ const Login = () => {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors }
     } = useForm()
 
@@ -22,8 +23,9 @@ const Login = () => {
     const onSubmit = async (data) => {        
         try {
             await dispatch(login(data)).unwrap()
+            navigate('/')            
             toast.success('login successfully')
-            navigate('/')
+            reset()
         } catch (error) {
             toast.error(error.message)
         }

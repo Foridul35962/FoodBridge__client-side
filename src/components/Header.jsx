@@ -1,12 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { LogOut, MapPin, Search, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { logout } from '../store/slice/authSlice'
+import { toast } from 'react-toastify'
 
 const Header = () => {
     const { user, city } = useSelector(state => state.auth)
     const [showSearch, setShowSearch] = useState(false)
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [showUserMenu, setShowUserMenu] = useState(false)
 
@@ -28,6 +31,15 @@ const Header = () => {
             setShowUserMenu(!showUserMenu)
         }else{
             navigate('/login')
+        }
+    }
+
+    const handleLogout = async ()=>{
+        try {
+            await dispatch(logout()).unwrap()
+            toast.success('Logout successfully')
+        } catch (error) {
+            toast.error(error.message)
         }
     }
 
@@ -81,7 +93,7 @@ const Header = () => {
                                     onClick={handleAvatar}
                                     className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer select-none"
                                 >
-                                    {user?.fullName?.slice(0, 1) || 'A'}
+                                    {user?.fullName?(user.fullName.split(" ").slice(0, 2).map(w => w[0]).join("")) : 'A'}
                                 </div>
 
                                 {/* Popup Menu */}
@@ -103,12 +115,14 @@ const Header = () => {
                                                     My Orders
                                                 </button>
 
-                                                <button className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
+                                                <button className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
                                                     <User size={16} />
                                                     Profile
                                                 </button>
 
-                                                <button className="w-full flex items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 text-red-500">
+                                                <button
+                                                onClick={handleLogout}
+                                                className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 text-red-500">
                                                     <LogOut size={16} />
                                                     Logout
                                                 </button>
