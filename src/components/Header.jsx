@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { LogOut, MapPin, Search, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
+import { LogOut, MapPin, Plus, Search, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { logout } from '../store/slice/authSlice'
@@ -76,21 +76,32 @@ const Header = () => {
                             {/* Cart */}
                             {
                                 user?.role === 'user' &&
-                                <>
-                                    <div className="relative cursor-pointer">
-                                        <ShoppingCart className="text-orange-500 size-7" />
-                                        <span class
-                                            className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                                            0
-                                        </span>
-                                    </div>
-
-                                    {/* Orders */}
-                                    <div className="hidden sm:block text-sm text-orange-500 font-medium cursor-pointer">
-                                        My Orders
-                                    </div>
-                                </>
+                                <div className="relative cursor-pointer">
+                                    <ShoppingCart className="text-orange-500 size-7" />
+                                    <span
+                                        className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                        0
+                                    </span>
+                                </div>
                             }
+
+                            {/* add items */}
+                            {
+                                user?.role=== 'owner' &&
+                                <div className='flex gap-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-all duration-300 text-white text-sm items-center rounded-2xl p-1 sm:px-2 sm:py-1 cursor-pointer'>
+                                    <Plus />
+                                    <p className='hidden sm:block'>Add Item</p>
+                                </div>
+                            }
+
+                            {/* Orders */}
+                            <div className={`relative ${user?.role==='user' && 'hidden sm:block' }`}>
+                                <ShoppingBag className='size-5 text-orange-500' />
+                                <span
+                                    className="absolute -top-3 -right-3 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                    0
+                                </span>
+                            </div>
 
                             {/* Mobile Search Toggle */}
                             <button
@@ -104,7 +115,7 @@ const Header = () => {
                             <div className="relative" ref={menuRef}>
                                 <div
                                     onClick={handleAvatar}
-                                    className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer select-none"
+                                    className="w-8 h-8 bg-orange-500 hover:bg-orange-600 transition-all duration-300 text-white rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer select-none"
                                 >
                                     {user?.fullName ? (user.fullName.split(" ").slice(0, 2).map(w => w[0]).join("")) : 'A'}
                                 </div>
@@ -124,7 +135,6 @@ const Header = () => {
 
                                             <div className="py-2">
                                                 {
-                                                    user?.role === 'user' &&
                                                     <button className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
                                                         <ShoppingBag size={16} />
                                                         My Orders
