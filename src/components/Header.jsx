@@ -26,15 +26,15 @@ const Header = () => {
         return () => document.removeEventListener('mousedown', handler)
     }, [])
 
-    const handleAvatar = ()=>{
+    const handleAvatar = () => {
         if (user) {
             setShowUserMenu(!showUserMenu)
-        }else{
+        } else {
             navigate('/login')
         }
     }
 
-    const handleLogout = async ()=>{
+    const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap()
             toast.success('Logout successfully')
@@ -51,7 +51,7 @@ const Header = () => {
                     <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
 
                         {/* Logo */}
-                        <div onClick={()=>navigate('/')} className="text-xl cursor-pointer font-bold text-orange-600">
+                        <div onClick={() => navigate('/')} className="text-xl cursor-pointer font-bold text-orange-600">
                             FoodBridge
                         </div>
 
@@ -74,64 +74,23 @@ const Header = () => {
                         <div className="flex items-center gap-4">
 
                             {/* Cart */}
-                            <div className="relative cursor-pointer">
-                                <ShoppingCart className="text-orange-500 size-7" />
-                                <span class
-                                    className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                                    0
-                                </span>
-                            </div>
+                            {
+                                user?.role === 'user' &&
+                                <>
+                                    <div className="relative cursor-pointer">
+                                        <ShoppingCart className="text-orange-500 size-7" />
+                                        <span class
+                                            className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+                                            0
+                                        </span>
+                                    </div>
 
-                            {/* Orders */}
-                            {user && <div className="hidden sm:block text-sm text-orange-500 font-medium cursor-pointer">
-                                My Orders
-                            </div>}
-
-                            {/* Avatar */}
-                            <div className="relative" ref={menuRef}>
-                                <div
-                                    onClick={handleAvatar}
-                                    className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer select-none"
-                                >
-                                    {user?.fullName?(user.fullName.split(" ").slice(0, 2).map(w => w[0]).join("")) : 'A'}
-                                </div>
-
-                                {/* Popup Menu */}
-                                {
-                                    showUserMenu && user && (
-                                        <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border z-50 overflow-hidden">
-                                            <div className="px-4 py-3 border-b">
-                                                <p className="text-sm font-semibold text-gray-800">
-                                                    {user.fullName}
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    Welcome back 👋
-                                                </p>
-                                            </div>
-
-                                            <div className="py-2">
-                                                <button className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
-                                                    <ShoppingBag size={16} />
-                                                    My Orders
-                                                </button>
-
-                                                <button className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
-                                                    <User size={16} />
-                                                    Profile
-                                                </button>
-
-                                                <button
-                                                onClick={handleLogout}
-                                                className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 text-red-500">
-                                                    <LogOut size={16} />
-                                                    Logout
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-                            </div>
-
+                                    {/* Orders */}
+                                    <div className="hidden sm:block text-sm text-orange-500 font-medium cursor-pointer">
+                                        My Orders
+                                    </div>
+                                </>
+                            }
 
                             {/* Mobile Search Toggle */}
                             <button
@@ -140,6 +99,54 @@ const Header = () => {
                             >
                                 <Search className="text-orange-500" size={22} />
                             </button>
+
+                            {/* Avatar */}
+                            <div className="relative" ref={menuRef}>
+                                <div
+                                    onClick={handleAvatar}
+                                    className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-semibold cursor-pointer select-none"
+                                >
+                                    {user?.fullName ? (user.fullName.split(" ").slice(0, 2).map(w => w[0]).join("")) : 'A'}
+                                </div>
+
+                                {/* Popup Menu */}
+                                {
+                                    showUserMenu && user && (
+                                        <div className="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border z-50 overflow-hidden">
+                                            <div className="px-4 py-3 border-b">
+                                                <p className="text-sm font-semibold text-gray-800">
+                                                    {user?.fullName}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    Welcome back 👋
+                                                </p>
+                                            </div>
+
+                                            <div className="py-2">
+                                                {
+                                                    user?.role === 'user' &&
+                                                    <button className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
+                                                        <ShoppingBag size={16} />
+                                                        My Orders
+                                                    </button>
+                                                }
+
+                                                <button className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
+                                                    <User size={16} />
+                                                    Profile
+                                                </button>
+
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 text-red-500">
+                                                    <LogOut size={16} />
+                                                    Logout
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            </div>
 
                         </div>
                     </div>
