@@ -7,6 +7,8 @@ import { toast } from 'react-toastify'
 
 const Header = () => {
     const { user, city } = useSelector(state => state.auth)
+    const {shopLoading, shopData} = useSelector((state)=>state.shop)
+    
     const [showSearch, setShowSearch] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -87,7 +89,7 @@ const Header = () => {
 
                             {/* add items */}
                             {
-                                user?.role=== 'owner' &&
+                                user?.role=== 'owner' && !shopLoading && shopData &&
                                 <div className='flex gap-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-all duration-300 text-white text-sm items-center rounded-2xl p-1 sm:px-2 sm:py-1 cursor-pointer'>
                                     <Plus />
                                     <p className='hidden sm:block'>Add Item</p>
