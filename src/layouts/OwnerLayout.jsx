@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getOwnerItems } from '../store/slice/shopSlice'
 import Loading from '../components/Loading'
 import ShopNotExists from '../components/ShopNotExists'
+import OwnerHome from '../pages/owner/OwnerHome'
 
 const OwnerLayout = () => {
   const dispatch = useDispatch()
@@ -20,7 +21,7 @@ const OwnerLayout = () => {
   return (
     <>
       {
-        shopLoading ? <Loading /> : !shopData ? <ShopNotExists /> : <div></div>
+        shopLoading ? <Loading /> : !shopData ? <ShopNotExists /> : <OwnerHome />
       }
     </>
   )
