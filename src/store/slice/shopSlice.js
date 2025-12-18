@@ -90,7 +90,8 @@ const shopSlice = createSlice({
             })
             .addCase(getOwnerItems.fulfilled, (state, action) => {
                 state.shopLoading = false
-                state.items = action.payload.data
+                state.items = action.payload.data.items
+                state.shopData = action.payload.data.shop
             })
             .addCase(getOwnerItems.rejected, (state) => {
                 state.shopLoading = false
