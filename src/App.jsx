@@ -10,6 +10,7 @@ import useGetCity from './hooks/UseGetCity'
 import UseGetUser from './hooks/UseGetUser'
 import ProtectedRoute from './components/ProtectedRoute'
 import AddEditShop from './pages/owner/addEditShop'
+import AddEditFood from './pages/owner/AddEditFood'
 
 
 
@@ -37,7 +38,11 @@ const router = createBrowserRouter([
       {
         path: '/add-edit-shop',
         element: <ProtectedRoute role={'owner'}> <AddEditShop /> </ProtectedRoute>
-      }
+      },
+      {
+        path: '/add-edit-food',
+        element: <ProtectedRoute role={'owner'}> <AddEditFood /> </ProtectedRoute>
+      },
     ]
   }
 ])

@@ -7,8 +7,8 @@ import { toast } from 'react-toastify'
 
 const Header = () => {
     const { user, city } = useSelector(state => state.auth)
-    const {shopLoading, shopData} = useSelector((state)=>state.shop)
-    
+    const { shopLoading, shopData } = useSelector((state) => state.shop)
+
     const [showSearch, setShowSearch] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
@@ -89,15 +89,17 @@ const Header = () => {
 
                             {/* add items */}
                             {
-                                user?.role=== 'owner' && !shopLoading && shopData &&
-                                <div className='flex gap-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-all duration-300 text-white text-sm items-center rounded-2xl p-1 sm:px-2 sm:py-1 cursor-pointer'>
+                                user?.role === 'owner' && !shopLoading && shopData &&
+                                <div
+                                    onClick={() => navigate('/add-edit-food')}
+                                    className='flex gap-1 bg-orange-500 hover:bg-orange-600 active:bg-orange-700 transition-all duration-300 text-white text-sm items-center rounded-2xl p-1 sm:px-2 sm:py-1 cursor-pointer'>
                                     <Plus />
                                     <p className='hidden sm:block'>Add Item</p>
                                 </div>
                             }
 
                             {/* Orders */}
-                            <div className={`relative ${user?.role==='user' && 'hidden sm:block' }`}>
+                            <div className={`relative ${user?.role === 'user' && 'hidden sm:block'}`}>
                                 <ShoppingBag className='size-5 text-orange-500' />
                                 <span
                                     className="absolute -top-3 -right-3 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">

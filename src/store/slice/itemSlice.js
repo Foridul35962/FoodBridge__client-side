@@ -1,0 +1,98 @@
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import axios from 'axios'
+
+const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}/api/item`
+
+export const addItem = createAsyncThunk(
+    'item/add',
+    async (data, { rejectWithValue }) => {
+        try {
+            const res = await axios.post(`${SERVER_URL}/add-item`, data,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const editItem = createAsyncThunk(
+    'item/edit',
+    async ({ data, itemId }, { rejectWithValue }) => {
+        try {
+            const res = await axios.patch(`${SERVER_URL}/edit-item/${itemId}`, data,
+                { withCredentials: true }
+            )
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const deleteItem = createAsyncThunk(
+    'item/delete',
+    async (itemId, { rejectWithValue }) => {
+        try {
+            const res = await axios.delete(`${SERVER_URL}/delete`,
+                {
+                    data: {itemId},
+                    withCredentials: true
+                }
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+
+const initialState = {
+    itemLoading: false
+}
+
+const itemSlice = createSlice({
+    name: 'item',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        //add item
+        builder
+            .addCase(addItem.pending, (state) => {
+                state.itemLoading = true
+            })
+            .addCase(addItem.fulfilled, (state) => {
+                state.itemLoading = false
+            })
+            .addCase(addItem.rejected, (state) => {
+                state.itemLoading = false
+            })
+
+        //edit item
+        builder
+            .addCase(editItem.pending, (state) => {
+                state.itemLoading = true
+            })
+            .addCase(editItem.fulfilled, (state) => {
+                state.itemLoading = false
+            })
+            .addCase(editItem.rejected, (state) => {
+                state.itemLoading = false
+            })
+
+        //delete item
+        builder
+            .addCase(deleteItem.pending, (state) => {
+                state.itemLoading = true
+            })
+            .addCase(deleteItem.fulfilled, (state) => {
+                state.itemLoading = false
+            })
+            .addCase(deleteItem.rejected, (state) => {
+                state.itemLoading = false
+            })
+    }
+})
+
+export default itemSlice.reducer
