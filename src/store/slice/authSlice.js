@@ -95,10 +95,10 @@ export const resetPass = createAsyncThunk(
 
 export const fetchUser = createAsyncThunk(
     'auth/fetchUser',
-    async (_,{rejectWithValue})=>{
+    async (_, { rejectWithValue }) => {
         try {
             const res = await axios.get(`${SERVER_URL}/get-user`,
-                {withCredentials: true}
+                { withCredentials: true }
             )
             return res.data
         } catch (error) {
@@ -111,6 +111,8 @@ const initialState = {
     loading: false,
     error: null,
     user: null,
+    address: null,
+    state: null,
     city: null
 }
 
@@ -118,7 +120,13 @@ const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setCity: (state, action)=>{
+        setAddress: (state, action) => {
+            state.address = action.payload
+        },
+        setState: (state, action) => {
+            state.state = action.payload
+        },
+        setCity: (state, action) => {
             state.city = action.payload
         }
     },
@@ -235,5 +243,5 @@ const authSlice = createSlice({
     }
 })
 
-export const {setCity} = authSlice.actions
+export const { setAddress, setState, setCity } = authSlice.actions
 export default authSlice.reducer
