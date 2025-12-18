@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { deleteItem } from "./itemSlice";
 
 const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}/api/shop`
 
@@ -95,6 +96,15 @@ const shopSlice = createSlice({
             })
             .addCase(getOwnerItems.rejected, (state) => {
                 state.shopLoading = false
+            })
+
+        //delete item
+        builder
+            .addCase(deleteItem.fulfilled, (state, action) => {
+                const deletedItemId = action.payload?.data;
+                if (deletedItemId) {
+                    state.items = state.items.filter(item => item._id !== deletedItemId);
+                }
             })
     }
 })
