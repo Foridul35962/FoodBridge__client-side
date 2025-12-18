@@ -1,6 +1,9 @@
 import { UtensilsCrossed } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 const ShopNotExists = () => {
+    const navigate = useNavigate()
+
     return (
         <div className='w-full min-h-screen p-5 bg-orange-50 flex items-center justify-center'>
             <div className='rounded-3xl shadow-xl bg-white p-8 max-w-md flex flex-col items-center gap-6 text-center border border-orange-100'>
@@ -18,6 +21,7 @@ const ShopNotExists = () => {
                 </div>
 
                 <button
+                    onClick={() => navigate('/add-edit-shop')}
                     className='bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-300 w-full shadow-lg shadow-orange-200 active:scale-95 cursor-pointer'
                 >
                     Get Started

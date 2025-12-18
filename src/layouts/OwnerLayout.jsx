@@ -6,22 +6,22 @@ import ShopNotExists from '../components/ShopNotExists'
 
 const OwnerLayout = () => {
   const dispatch = useDispatch()
-  const {shopData, shopLoading} = useSelector((state)=>state.shop)
+  const { shopData, shopLoading } = useSelector((state) => state.shop)
 
-  useEffect(()=>{
-    const getShopItems = async ()=>{
+  useEffect(() => {
+    const getShopItems = async () => {
       try {
         await dispatch(getOwnerItems()).unwrap()
       } catch (error) {
       }
     }
     getShopItems()
-  },[])
+  }, [])
   return (
     <>
-    {
-      shopLoading? <Loading /> : !shopData? <ShopNotExists /> : <div></div>
-    }
+      {
+        shopLoading ? <Loading /> : !shopData ? <ShopNotExists /> : <div></div>
+      }
     </>
   )
 }
