@@ -8,33 +8,39 @@ import ForgetPass from './pages/ForgetPass'
 import { ToastContainer } from 'react-toastify'
 import useGetCity from './hooks/UseGetCity'
 import UseGetUser from './hooks/UseGetUser'
+import ProtectedRoute from './components/ProtectedRoute'
+import AddEditShop from './pages/owner/addEditShop'
 
 
 
 const router = createBrowserRouter([
-    {
-      path: '/',
-      element: <MainLayout />,
-      children: [
-        {
-          path: '/',
-          element: <Home />
-        },
-        {
-          path: '/login',
-          element:  <Login />
-        },
-        {
-          path: '/registration',
-          element: <Registration />
-        },
-        {
-          path: '/forget-pass',
-          element: <ForgetPass />
-        }
-      ]
-    }
-  ])
+  {
+    path: '/',
+    element: <MainLayout />,
+    children: [
+      {
+        path: '/',
+        element: <Home />
+      },
+      {
+        path: '/login',
+        element: <Login />
+      },
+      {
+        path: '/registration',
+        element: <Registration />
+      },
+      {
+        path: '/forget-pass',
+        element: <ForgetPass />
+      },
+      {
+        path: '/add-edit-shop',
+        element: <ProtectedRoute role={'owner'}> <AddEditShop /> </ProtectedRoute>
+      }
+    ]
+  }
+])
 
 const App = () => {
 
