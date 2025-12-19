@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, current } from '@reduxjs/toolkit'
 import axios from 'axios'
 
 const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}/api/item`
@@ -36,7 +36,7 @@ export const deleteItem = createAsyncThunk(
         try {
             const res = await axios.delete(`${SERVER_URL}/delete`,
                 {
-                    data: {itemId},
+                    data: { itemId },
                     withCredentials: true
                 }
             )
@@ -47,9 +47,23 @@ export const deleteItem = createAsyncThunk(
     }
 )
 
+export const getAllItem = createAsyncThunk(
+    'item/getAll',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/get`)
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 
 const initialState = {
-    itemLoading: false
+    itemLoading: false,
+    allItem: [],
+    uniqueCategoryItems: []
 }
 
 const itemSlice = createSlice({
@@ -90,6 +104,26 @@ const itemSlice = createSlice({
                 state.itemLoading = false
             })
             .addCase(deleteItem.rejected, (state) => {
+                state.itemLoading = false
+            })
+
+        //get all item
+        builder
+            .addCase(getAllItem.pending, (state) => {
+                state.itemLoading = true
+            })
+            .addCase(getAllItem.fulfilled, (state, action) => {
+                state.itemLoading = false
+                state.allItem = action.payload.data
+                state.uniqueCategoryItems = action.payload.data.reduce((acc, current) => {
+                    const isExist = acc.find((item) => item.category === current.category)
+                    if (!isExist) {
+                        acc.push(current)
+                    }
+                    return acc
+                }, [])
+            })
+            .addCase(getAllItem.rejected, (state) => {
                 state.itemLoading = false
             })
     }
