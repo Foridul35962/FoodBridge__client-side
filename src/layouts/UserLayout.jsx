@@ -1,8 +1,16 @@
-import React from 'react'
+import Category from "../components/Category"
+import GetShopByCity from '../components/GetShopByCity'
+import ItemByCity from "../components/ItemByCity"
+
 
 const UserLayout = () => {
+  
   return (
-    <div>UserLayout</div>
+    <div className="px-5 sm:px-15 bg-orange-50">
+      <Category />
+      <GetShopByCity />
+      <ItemByCity />
+    </div>
   )
 }
 

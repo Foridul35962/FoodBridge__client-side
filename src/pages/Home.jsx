@@ -10,11 +10,11 @@ const Home = () => {
   return (
     <>
       {
-        loading ? <Loading /> :
+        loading ? <Loading /> : user ?
           (user?.role === 'user' ? <UserLayout /> :
             (user?.role === 'owner' ? <OwnerLayout /> :
               user?.role === 'deliveryBoy' && <DeliveryLayout />)
-          )
+          ) : <UserLayout />
       }
     </>
   )
