@@ -60,10 +60,25 @@ export const getShopsByCity = createAsyncThunk(
     }
 )
 
+export const getShopItems = createAsyncThunk(
+    'shop/get-shop-items',
+    async (shopId, {rejectWithValue})=>{
+        try {
+            const res = await axios.get(`${SERVER_URL}/get-shop-items/${shopId}`,
+                {withCredentials: true}
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 
 const initialState = {
     shopLoading: false,
     shopData: null,
+    shopItems : [],
     items: [],
     allShopsByCity: [],
     itemsByCity: []
@@ -126,13 +141,24 @@ const shopSlice = createSlice({
                 state.shopLoading = true
             })
             .addCase(getShopsByCity.fulfilled, (state, action) => {
-                console.log(action.payload.data);
-                
                 state.shopLoading = false
                 state.allShopsByCity = action.payload.data.shops
                 state.itemsByCity = action.payload.data.items
             })
             .addCase(getShopsByCity.rejected, (state) => {
+                state.shopLoading = false
+            })
+        //get shop details and items
+        builder
+            .addCase(getShopItems.pending, (state) => {
+                state.shopLoading = true
+            })
+            .addCase(getShopItems.fulfilled, (state, action) => {
+                state.shopLoading = false
+                state.shopData = action.payload.data.shop
+                state.shopItems = action.payload.data.shopItems
+            })
+            .addCase(getShopItems.rejected, (state) => {
                 state.shopLoading = false
             })
     }
