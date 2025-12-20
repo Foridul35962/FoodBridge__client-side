@@ -1,22 +1,12 @@
-import React from 'react';
+import { Eye } from 'lucide-react';
+import React from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Eye, ArrowRight } from 'lucide-react';
 
-const ItemByCity = () => {
+const AllFoodInCity = () => {
     const navigate = useNavigate();
     const { itemsByCity } = useSelector((state) => state.shop);
-    const { user } = useSelector((state) => state.auth)
-
-    if (!itemsByCity || itemsByCity.length === 0) return null;
-
-    const handleViewItems = () => {
-        if (user) {
-            navigate('/all-foods')
-        } else {
-            navigate('/login')
-        }
-    }
+    const { user } = useSelector((state) => state.auth);
 
     const handleViewDetails = (itemId) => {
         if (user) {
@@ -26,22 +16,12 @@ const ItemByCity = () => {
         }
     }
 
-    return (
-        <div className="container mx-auto">
-            <div className="flex justify-between items-center mb-6 px-1">
-                <h2 className="text-2xl font-semibold text-gray-800">Suggested Food</h2>
-                {itemsByCity.length > 8 && (
-                    <button
-                        onClick={handleViewItems}
-                        className="text-orange-500 cursor-pointer text-sm font-bold flex items-center gap-1 hover:underline"
-                    >
-                        See All <ArrowRight size={14} />
-                    </button>
-                )}
-            </div>
 
+    return (
+        <div className="flex flex-col gap-3 p-6 sm:px-14">
+            <h1 className='text-3xl font-semibold text-orange-500'>Here All Foods In Your City</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {itemsByCity.slice(0, 8).map((item) => (
+                {itemsByCity.map((item) => (
                     <div
                         key={item._id}
                         className="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 group"
@@ -87,19 +67,8 @@ const ItemByCity = () => {
                     </div>
                 ))}
             </div>
-
-            {itemsByCity.length > 8 && (
-                <div className="mt-8 flex justify-center">
-                    <button
-                        onClick={handleViewItems}
-                        className="flex cursor-pointer items-center gap-2 px-6 py-2.5 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-2xl hover:bg-gray-50 hover:border-orange-200 hover:text-orange-600 transition-all shadow-sm"
-                    >
-                        Explore More Items <ArrowRight size={16} />
-                    </button>
-                </div>
-            )}
         </div>
-    );
-};
+    )
+}
 
-export default ItemByCity;
+export default AllFoodInCity
