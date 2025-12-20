@@ -59,10 +59,26 @@ export const getAllItem = createAsyncThunk(
     }
 )
 
+export const getItemById = createAsyncThunk(
+    'item/itemById',
+    async (itemId, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL}/get-item-by-id/${itemId}`,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 
 const initialState = {
     itemLoading: false,
     allItem: [],
+    item: null,
+    reletedItem: [],
     uniqueCategoryItems: []
 }
 
@@ -124,6 +140,19 @@ const itemSlice = createSlice({
                 }, [])
             })
             .addCase(getAllItem.rejected, (state) => {
+                state.itemLoading = false
+            })
+        
+        //get item by id
+        builder
+            .addCase(getItemById.pending, (state) => {
+                state.itemLoading = true
+            })
+            .addCase(getItemById.fulfilled, (state, action) => {
+                state.itemLoading = false
+                state.item = action.payload.data
+            })
+            .addCase(getItemById.rejected, (state) => {
                 state.itemLoading = false
             })
     }
