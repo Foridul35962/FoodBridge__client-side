@@ -3,11 +3,14 @@ import { getShopsByCity } from '../store/slice/shopSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { CircleArrowLeft, CircleArrowRight } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
+import NoFoodFound from './pages/NoFoodFound'
 
 const GetShopByCity = () => {
     const dispatch = useDispatch()
     const { allShopsByCity } = useSelector((state) => state.shop)
-    const { city } = useSelector((state) => state.auth)
+    const { user, city } = useSelector((state) => state.auth)
+    const navigate = useNavigate()
     const shopScrollRef = useRef()
 
     const [isDragging, setIsDragging] = useState(false)
@@ -51,10 +54,18 @@ const GetShopByCity = () => {
         shopScrollRef.current.scrollLeft = scrollLeft - walk
     }
 
+    const handleGetShop = (shopId) => {
+        if (user) {
+            navigate(`/shop/${shopId}`)
+        } else {
+            navigate('/login')
+        }
+    }
+
     return (
         <>
             {
-                allShopsByCity.length > 0 &&
+                !allShopsByCity.length > 0 ? <NoFoodFound /> :
                 <div className='relative py-5'>
                     <h1 className='text-2xl font-semibold'>Best Shops In {city}</h1>
                     <div
@@ -69,6 +80,7 @@ const GetShopByCity = () => {
                         {allShopsByCity?.map((shop, idx) => (
                             <div
                                 key={idx}
+                                onClick={() => handleGetShop(shop._id)}
                                 className='relative shrink-0 snap-center cursor-pointer group'
                             >
                                 <div className="overflow-hidden rounded-2xl pointer-events-none">
