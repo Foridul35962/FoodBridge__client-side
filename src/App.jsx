@@ -11,6 +11,10 @@ import UseGetUser from './hooks/UseGetUser'
 import ProtectedRoute from './components/ProtectedRoute'
 import AddEditShop from './pages/owner/addEditShop'
 import AddEditFood from './pages/owner/AddEditFood'
+import CategoryItems from './pages/CategoryItems'
+import ShopStore from './pages/ShopStore'
+import Food from './pages/Food'
+import AllFoodInCity from './pages/AllFoodInCity'
 
 
 
@@ -34,6 +38,22 @@ const router = createBrowserRouter([
       {
         path: '/forget-pass',
         element: <ForgetPass />
+      },
+      {
+        path: '/categories/:category',
+        element: <ProtectedRoute role={'user'}> <CategoryItems /> </ProtectedRoute>
+      },
+      {
+        path: '/food/:foodId',
+        element: <Food />
+      },
+      {
+        path: '/all-foods',
+        element: <ProtectedRoute role={'user'}> <AllFoodInCity /> </ProtectedRoute>
+      },
+      {
+        path: '/shop/:shopId',
+        element: <ProtectedRoute role={'user'}> <ShopStore /> </ProtectedRoute>
       },
       {
         path: '/add-edit-shop',
