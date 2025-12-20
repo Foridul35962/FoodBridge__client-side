@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 const Header = () => {
     const { user, city } = useSelector(state => state.auth)
     const { shopLoading, shopData } = useSelector((state) => state.shop)
+    const {cartItems} = useSelector((state)=>state.cart)
 
     const [showSearch, setShowSearch] = useState(false)
     const navigate = useNavigate()
@@ -91,7 +92,7 @@ const Header = () => {
                                     <ShoppingCart className="text-orange-500 size-7" />
                                     <span
                                         className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                                        0
+                                        {cartItems.length}
                                     </span>
                                 </div>
                             }

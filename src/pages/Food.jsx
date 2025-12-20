@@ -5,6 +5,7 @@ import { getItemById } from '../store/slice/itemSlice'
 import { ShoppingCartIcon, Plus, Minus, Clock1, StarIcon, Eye } from 'lucide-react'
 import { useState } from 'react'
 import Loading from '../components/Loading'
+import { addToCart } from '../store/slice/cartSlice'
 
 const Food = () => {
     const { foodId } = useParams()
@@ -13,6 +14,7 @@ const Food = () => {
 
     const { item, itemLoading } = useSelector((state) => state.item)
     const { itemsByCity } = useSelector((state) => state.shop)
+    const { cartItems } = useSelector((state) => state.cart)
     const relatedItem = itemsByCity
         ?.filter((i) => (i.category === item?.category || i.name === item?.name) && i._id !== item?._id)
         .slice(0, 4)
@@ -29,6 +31,20 @@ const Food = () => {
     }
     const [quantity, setQuantity] = useState(1)
 
+
+    const handleAddToCart = (item) => {
+        dispatch(addToCart({
+            itemId: item._id,
+            itemName: item.name,
+            itemImage: item.image.url,
+            itemFoodTypes: item.foodTypes,
+            itemPrice: item.price,
+            itemCategory: item.category,
+            itemQuantity: quantity
+        }))
+    }
+
+    const isInCart = cartItems.some((i) => i.itemId === item._id)
 
     return (
         <>
@@ -101,9 +117,12 @@ const Food = () => {
                                     </div>
                                 </div>
 
-                                <button className="w-full md:w-max bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-orange-100">
+                                <button
+                                    onClick={() => handleAddToCart(item)}
+                                    className={`w-full md:w-max px-8 py-3.5 rounded-xl font-bold cursor-pointer text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-95 shadow-lg 
+                                        ${!isInCart ? 'bg-orange-500 hover:bg-orange-600 shadow-orange-200' : 'bg-gray-800 hover:bg-black shadow-gray-200'} text-white`}>
                                     <ShoppingCartIcon size={18} />
-                                    Add to Cart
+                                    {isInCart ? 'Added In Cart' : 'Add to Cart'}
                                 </button>
                             </div>
                         </div>
