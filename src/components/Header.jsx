@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { LogOut, MapPin, Plus, Search, ShoppingBag, ShoppingCart, User, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-import { logout } from '../store/slice/authSlice'
+import { logout, setCity } from '../store/slice/authSlice'
 import { toast } from 'react-toastify'
 
 const Header = () => {
@@ -14,6 +14,15 @@ const Header = () => {
     const dispatch = useDispatch()
 
     const [showUserMenu, setShowUserMenu] = useState(false)
+    const [showLocationMenu, setShowLocationMenu] = useState(false)
+
+    const handleSetLocation = (e) => {
+        e.preventDefault()
+        const city = e.target.city.value
+        dispatch(setCity(city))
+        setShowLocationMenu(false)
+    }
+
 
     const menuRef = useRef(null)
 
@@ -59,7 +68,7 @@ const Header = () => {
 
                         {/* Search Bar (Desktop) */}
                         <div className="hidden sm:flex items-center w-1/2 bg-white rounded-md shadow px-3 py-2 gap-2">
-                            <div className="flex items-center gap-1 text-gray-500 text-sm pr-3 border-r">
+                            <div onClick={() => setShowLocationMenu(true)} title='set location' className="flex cursor-pointer items-center gap-1 text-gray-500 text-sm pr-3 border-r">
                                 <MapPin size={16} className="text-orange-500" />
                                 {city}
                             </div>
@@ -170,8 +179,8 @@ const Header = () => {
                 {showSearch && (
                     <div className="sm:hidden bg-[#fff7f2] px-4 pb-2 shadow-md">
                         <div className="flex items-center bg-white rounded-md px-3 py-2 gap-2">
-                            <MapPin className="text-orange-500 size-6" />
-                            <span className="text-sm text-gray-500">{city}</span>
+                            <MapPin className="text-orange-500 size-6" onClick={() => setShowLocationMenu(true)} />
+                            <span className="text-sm text-gray-500" onClick={() => setShowLocationMenu(true)}>{city}</span>
 
                             <span className="mx-2 text-gray-300">|</span>
 
@@ -186,6 +195,35 @@ const Header = () => {
                                 onClick={() => setShowSearch(false)}
                                 className="text-orange-500 cursor-pointer"
                                 size={18}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Popup Menu */}
+                {showLocationMenu && (
+                    <div className="absolute left-8 mt-3 w-64 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="p-4 relative">
+                            <h3 className="text-sm font-semibold text-gray-700 mb-3">Enter Location</h3>
+                            <form onSubmit={handleSetLocation} className="flex flex-col gap-3">
+                                <input
+                                    type="text"
+                                    placeholder="Enter City"
+                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                                    name="city"
+                                    autoFocus
+                                />
+                                <button
+                                    type="submit"
+                                    className="w-full bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium py-2 rounded-md transition-colors duration-200 shadow-md active:scale-95"
+                                >
+                                    Set Location
+                                </button>
+                            </form>
+                            <X
+                                onClick={() => setShowLocationMenu(false)}
+                                className="text-orange-500 absolute right-4 top-4 cursor-pointer"
+                                size={20}
                             />
                         </div>
                     </div>
