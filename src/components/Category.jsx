@@ -3,9 +3,12 @@ import { getAllItem } from '../store/slice/itemSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { CircleArrowLeft, CircleArrowRight } from 'lucide-react'
 import Loading from './Loading'
+import { useNavigate } from 'react-router-dom'
 
 const Category = () => {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const {user} = useSelector((state)=>state.auth)
     const { uniqueCategoryItems } = useSelector((state) => state.item)
     const cateScrollRef = useRef()
 
@@ -44,6 +47,14 @@ const Category = () => {
         cateScrollRef.current.scrollLeft = scrollLeft - walk
     }
 
+    const handleViewCategory = (categoryId)=>{
+        if (user) {
+            navigate(`/categories/${categoryId}`)
+        } else {
+            navigate('/login')
+        }
+    }
+
     return (
         <>
             {
@@ -62,6 +73,7 @@ const Category = () => {
                         {uniqueCategoryItems?.map((item, idx) => (
                             <div
                                 key={idx}
+                                onClick={()=>handleViewCategory(item.category)}
                                 className='relative shrink-0 snap-center cursor-pointer group'
                             >
                                 <div className="overflow-hidden rounded-2xl pointer-events-none">
