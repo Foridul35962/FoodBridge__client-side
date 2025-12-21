@@ -34,17 +34,18 @@ const Food = () => {
 
     const handleAddToCart = (item) => {
         dispatch(addToCart({
-            itemId: item._id,
-            itemName: item.name,
-            itemImage: item.image.url,
-            itemFoodTypes: item.foodTypes,
-            itemPrice: item.price,
-            itemCategory: item.category,
-            itemQuantity: quantity
+            _id: item._id,
+            name: item.name,
+            image: item.image.url,
+            foodTypes: item.foodTypes,
+            price: item.price,
+            category: item.category,
+            shop: item.shop,
+            quantity: quantity
         }))
     }
 
-    const isInCart = cartItems.some((i) => i.itemId === item._id)
+    const isInCart = cartItems.some((i) => i._id === item._id)
 
     return (
         <>
