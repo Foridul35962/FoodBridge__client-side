@@ -1,7 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addToCart } from '../store/slice/cartSlice';
+import { addToCart, deleteToCart } from '../store/slice/cartSlice';
 import { useNavigate } from 'react-router-dom';
+import { Trash2 } from 'lucide-react';
 
 const Cart = () => {
     const { cartItems } = useSelector((state) => state.cart);
@@ -22,7 +23,11 @@ const Cart = () => {
                 newQuantity -= 1
             }
         }
-        dispatch(addToCart({...item, quantity: newQuantity}))
+        dispatch(addToCart({ ...item, quantity: newQuantity }))
+    }
+
+    const handleRemoveItem = (itemId)=>{
+        dispatch(deleteToCart(itemId))
     }
 
     return (
@@ -52,18 +57,28 @@ const Cart = () => {
                                                 <h3 className="font-semibold text-lg text-gray-800">{item.name}</h3>
                                                 <p className="text-sm text-gray-500 capitalize">{item.category} • {item.itemFoodTypes}</p>
                                             </div>
-                                            <span className={`px-2 py-1 rounded text-xs font-bold ${item.foodTypes === 'veg' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                                ●
-                                            </span>
+                                            <div className="flex items-center gap-3">
+                                                <span className={`px-2 py-1 rounded text-xs font-bold ${item.foodTypes === 'veg' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                    ●
+                                                </span>
+                                                {/* Delete Button */}
+                                                <button
+                                                    onClick={() => handleRemoveItem(item._id)}
+                                                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                                                    title="Remove item"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </div>
 
                                         <div className="mt-4 flex justify-between items-center">
                                             <div className="flex items-center border rounded-lg bg-gray-50">
                                                 <button onClick={() => handleChangeQuantity(item, 'decrement')}
-                                                className="px-3 py-1 hover:bg-gray-200 cursor-pointer rounded-lg">-</button>
+                                                    className="px-3 py-1 hover:bg-gray-200 cursor-pointer rounded-lg">-</button>
                                                 <span className="px-3 py-1 font-medium">{item.quantity}</span>
                                                 <button onClick={() => handleChangeQuantity(item, 'increment')}
-                                                className="px-3 py-1 hover:bg-gray-200  cursor-pointer rounded-lg">+</button>
+                                                    className="px-3 py-1 hover:bg-gray-200 cursor-pointer rounded-lg">+</button>
                                             </div>
                                             <p className="font-bold text-gray-900">৳{item.price * item.quantity}</p>
                                         </div>
@@ -94,8 +109,8 @@ const Cart = () => {
                                 </div>
 
                                 <button
-                                onClick={()=> navigate('/checkout')}
-                                className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white cursor-pointer font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-orange-200">
+                                    onClick={() => navigate('/checkout')}
+                                    className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white cursor-pointer font-bold py-3 rounded-xl transition duration-200 shadow-lg shadow-orange-200">
                                     Proceed to Checkout
                                 </button>
 
