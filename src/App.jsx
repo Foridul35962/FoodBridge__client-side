@@ -63,10 +63,6 @@ const router = createBrowserRouter([
         element: <ProtectedRoute role={'user'}> <CheckOut /> </ProtectedRoute>
       },
       {
-        path: '/order-placed',
-        element: <ProtectedRoute role={'user'}> <OrderPlaced /> </ProtectedRoute>
-      },
-      {
         path: '/shop/:shopId',
         element: <ProtectedRoute role={'user'}> <ShopStore /> </ProtectedRoute>
       },
