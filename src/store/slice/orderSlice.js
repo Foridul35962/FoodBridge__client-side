@@ -17,6 +17,21 @@ export const placeOrder = createAsyncThunk(
     }
 )
 
+export const getMyOrders = createAsyncThunk(
+    'order/myOrders',
+    async (_, {rejectWithValue})=>{
+        try {
+            const res = await axios.get(`${SERVER_URL}/my-orders`,
+                {withCredentials: true}
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+
 const initialState = {
     orderLoading: false,
     orders: []
@@ -34,10 +49,21 @@ const orderSlice = createSlice({
             })
             .addCase(placeOrder.fulfilled, (state, action) => {
                 state.orderLoading = false
-                console.log(action.payload)
                 state.orders = state.orders.push(action.payload.data)
             })
             .addCase(placeOrder.rejected, (state) => {
+                state.orderLoading = false
+            })
+        //get order
+        builder
+            .addCase(getMyOrders.pending, (state) => {
+                state.orderLoading = true
+            })
+            .addCase(getMyOrders.fulfilled, (state, action) => {
+                state.orderLoading = false
+                state.orders = action.payload.data
+            })
+            .addCase(getMyOrders.rejected, (state) => {
                 state.orderLoading = false
             })
     }

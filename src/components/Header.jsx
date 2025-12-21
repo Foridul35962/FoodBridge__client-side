@@ -109,7 +109,9 @@ const Header = () => {
                             }
 
                             {/* Orders */}
-                            <div className={`relative ${user?.role === 'user' && 'hidden sm:block'}`}>
+                            <div
+                            onClick={()=>navigate('/my-orders')}
+                            className={`relative `}>
                                 <ShoppingBag className='size-5 text-orange-500' />
                                 <span
                                     className="absolute -top-3 -right-3 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">

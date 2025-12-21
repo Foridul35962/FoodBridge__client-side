@@ -18,6 +18,7 @@ import AllFoodInCity from './pages/AllFoodInCity'
 import Cart from './pages/Cart'
 import CheckOut from './pages/CheckOut'
 import OrderPlaced from './pages/OrderPlaced'
+import MyOrders from './pages/MyOrders'
 
 
 
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
       {
         path: '/checkout',
         element: <ProtectedRoute role={'user'}> <CheckOut /> </ProtectedRoute>
+      },
+      {
+        path: '/my-orders',
+        element:  <MyOrders />
       },
       {
         path: '/shop/:shopId',
