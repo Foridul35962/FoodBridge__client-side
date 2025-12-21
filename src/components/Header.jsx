@@ -63,7 +63,7 @@ const Header = () => {
                     <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
 
                         {/* Logo */}
-                        <div onClick={() => navigate('/')} className="text-xl cursor-pointer font-bold text-orange-600">
+                        <div onClick={() => navigate('/')} className="text-xl sm:text-2xl cursor-pointer font-bold text-orange-600">
                             FoodBridge
                         </div>
 
@@ -88,7 +88,7 @@ const Header = () => {
                             {/* Cart */}
                             {
                                 user?.role === 'user' &&
-                                <div className="relative cursor-pointer">
+                                <div onClick={()=>navigate('/cart')} className="relative cursor-pointer">
                                     <ShoppingCart className="text-orange-500 size-7" />
                                     <span
                                         className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
