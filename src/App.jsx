@@ -15,6 +15,9 @@ import CategoryItems from './pages/CategoryItems'
 import ShopStore from './pages/ShopStore'
 import Food from './pages/Food'
 import AllFoodInCity from './pages/AllFoodInCity'
+import Cart from './pages/Cart'
+import CheckOut from './pages/CheckOut'
+import OrderPlaced from './pages/OrderPlaced'
 
 
 
@@ -50,6 +53,18 @@ const router = createBrowserRouter([
       {
         path: '/all-foods',
         element: <ProtectedRoute role={'user'}> <AllFoodInCity /> </ProtectedRoute>
+      },
+      {
+        path: '/cart',
+        element: <ProtectedRoute role={'user'}> <Cart /> </ProtectedRoute>
+      },
+      {
+        path: '/checkout',
+        element: <ProtectedRoute role={'user'}> <CheckOut /> </ProtectedRoute>
+      },
+      {
+        path: '/order-placed',
+        element: <ProtectedRoute role={'user'}> <OrderPlaced /> </ProtectedRoute>
       },
       {
         path: '/shop/:shopId',
