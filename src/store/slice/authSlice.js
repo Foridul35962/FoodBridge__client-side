@@ -107,6 +107,20 @@ export const fetchUser = createAsyncThunk(
     }
 )
 
+export const updateUserLocation = createAsyncThunk(
+    'auth/update',
+    async(data, {rejectWithValue})=>{
+        try {
+            const res = await axios.post(`${SERVER_URL}/update-location`, data,
+                {withCredentials: true}
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 const initialState = {
     loading: false,
     error: null,

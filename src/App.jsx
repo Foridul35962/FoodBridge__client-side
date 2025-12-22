@@ -17,8 +17,8 @@ import Food from './pages/Food'
 import AllFoodInCity from './pages/AllFoodInCity'
 import Cart from './pages/Cart'
 import CheckOut from './pages/CheckOut'
-import OrderPlaced from './pages/OrderPlaced'
 import MyOrders from './pages/MyOrders'
+import UseUpdateLocation from './hooks/UseUpdateLocation'
 
 
 
@@ -88,6 +88,7 @@ const App = () => {
   //fetchUser
   UseGetUser()
   useGetCity()
+  UseUpdateLocation()
 
   return (
     <>
