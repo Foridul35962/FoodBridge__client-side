@@ -8,7 +8,7 @@ import { toast } from 'react-toastify'
 const Header = () => {
     const { user, city } = useSelector(state => state.auth)
     const { shopLoading, shopData } = useSelector((state) => state.shop)
-    const {cartItems} = useSelector((state)=>state.cart)
+    const { cartItems } = useSelector((state) => state.cart)
 
     const [showSearch, setShowSearch] = useState(false)
     const navigate = useNavigate()
@@ -49,6 +49,7 @@ const Header = () => {
     const handleLogout = async () => {
         try {
             await dispatch(logout()).unwrap()
+            navigate('/')
             toast.success('Logout successfully')
         } catch (error) {
             toast.error(error.message)
@@ -88,7 +89,7 @@ const Header = () => {
                             {/* Cart */}
                             {
                                 user?.role === 'user' &&
-                                <div onClick={()=>navigate('/cart')} className="relative cursor-pointer">
+                                <div onClick={() => navigate('/cart')} className="relative cursor-pointer">
                                     <ShoppingCart className="text-orange-500 size-7" />
                                     <span
                                         className="absolute -top-2 -right-2 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
@@ -110,13 +111,9 @@ const Header = () => {
 
                             {/* Orders */}
                             <div
-                            onClick={()=>navigate('/my-orders')}
-                            className={`relative `}>
+                                onClick={() => navigate('/my-orders')}
+                                className={`cursor-pointer hidden sm:block ${!user && 'hidden'}`}>
                                 <ShoppingBag className='size-5 text-orange-500' />
-                                <span
-                                    className="absolute -top-3 -right-3 bg-orange-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                                    0
-                                </span>
                             </div>
 
                             {/* Mobile Search Toggle */}
@@ -151,7 +148,9 @@ const Header = () => {
 
                                             <div className="py-2">
                                                 {
-                                                    <button className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
+                                                    <button
+                                                        onClick={() => navigate('/my-orders')}
+                                                        className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
                                                         <ShoppingBag size={16} />
                                                         My Orders
                                                     </button>
