@@ -1,7 +1,10 @@
 import React from 'react';
+import { useDispatch } from 'react-redux'
 import { Package, User, Phone, MapPin, Clock, CreditCard, ShoppingBag, ChevronDown } from 'lucide-react';
+import { changeOrderStatus } from '../../store/slice/orderSlice';
 
 const OwnerOrderCart = ({ orders }) => {
+    const dispatch = useDispatch()
     if (!orders || orders.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border-2 border-dashed border-slate-200">
@@ -11,8 +14,12 @@ const OwnerOrderCart = ({ orders }) => {
         );
     }
 
-    const handleStatusChange = (orderId, shopOrderId, newStatus) => {
-        console.log(`Updating Status: Order ${orderId}, ShopOrder ${shopOrderId} to ${newStatus}`);
+    const handleStatusChange = (orderId,  shopId, status) => {
+        try {
+            dispatch(changeOrderStatus({orderId, shopId, status}))
+        } catch (error) {
+            console.log(error)
+        }
     };
 
     return (
@@ -82,7 +89,7 @@ const OwnerOrderCart = ({ orders }) => {
                                                     <div className="relative">
                                                         <select 
                                                             value={shopOrder.status}
-                                                            onChange={(e) => handleStatusChange(order._id, shopOrder._id, e.target.value)}
+                                                            onChange={(e) => handleStatusChange(order._id, shopOrder.shop._id, e.target.value)}
                                                             className="appearance-none bg-indigo-50 text-indigo-700 text-xs font-black py-2 px-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer transition-all"
                                                         >
                                                             <option value="Pending">Pending</option>
