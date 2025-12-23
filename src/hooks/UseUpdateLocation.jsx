@@ -12,7 +12,6 @@ const UseUpdateLocation = () => {
             try {
                 await dispatch(updateUserLocation({ lat, lon })).unwrap();
             } catch (error) {
-                console.error("Location update failed:", error);
             }
         };
 
