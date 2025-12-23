@@ -14,9 +14,9 @@ const OwnerOrderCart = ({ orders }) => {
         );
     }
 
-    const handleStatusChange = (orderId,  shopId, status) => {
+    const handleStatusChange = (orderId, shopId, status) => {
         try {
-            dispatch(changeOrderStatus({orderId, shopId, status}))
+            dispatch(changeOrderStatus({ orderId, shopId, status }))
         } catch (error) {
             console.log(error)
         }
@@ -31,13 +31,13 @@ const OwnerOrderCart = ({ orders }) => {
 
             <div className="grid grid-cols-1 gap-8">
                 {orders.map((order) => {
-                    const shopOrdersList = Array.isArray(order.shopOrders) 
-                        ? order.shopOrders 
+                    const shopOrdersList = Array.isArray(order.shopOrders)
+                        ? order.shopOrders
                         : [order.shopOrders];
 
                     return (
                         <div key={order._id} className="bg-white rounded-4xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all">
-                            
+
                             {/* Order Info Strip */}
                             <div className="bg-slate-900 p-4 px-6 flex flex-wrap justify-between items-center gap-4 text-white">
                                 <div className="flex items-center gap-2">
@@ -45,7 +45,7 @@ const OwnerOrderCart = ({ orders }) => {
                                     <span className="text-xs font-bold uppercase tracking-widest">Order ID: {order._id.slice(-10).toUpperCase()}</span>
                                 </div>
                                 <div className="flex items-center gap-4 text-xs font-medium text-slate-400">
-                                    <span className="flex items-center gap-1"><Clock size={14}/> {new Date(order.createdAt).toLocaleDateString()}</span>
+                                    <span className="flex items-center gap-1"><Clock size={14} /> {new Date(order.createdAt).toLocaleDateString()}</span>
                                     <span className="bg-indigo-600 text-white px-2 py-0.5 rounded uppercase font-bold text-[10px]">{order.paymentMethod}</span>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@ const OwnerOrderCart = ({ orders }) => {
                                                 <p className="text-xs text-slate-500 truncate">{order.user?.email}</p>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="space-y-3">
                                             <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
                                                 <Phone size={14} className="text-indigo-500" /> {order.user?.mobile}
@@ -82,12 +82,12 @@ const OwnerOrderCart = ({ orders }) => {
                                     <div className="space-y-6">
                                         {shopOrdersList.map((shopOrder) => (
                                             <div key={shopOrder._id} className="space-y-4">
-                                                
+
                                                 {/* Status Selector */}
                                                 <div className="flex items-center justify-between bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm">
                                                     <span className="text-xs font-bold text-slate-500 uppercase ml-2 tracking-tighter">Current Status</span>
                                                     <div className="relative">
-                                                        <select 
+                                                        <select
                                                             value={shopOrder.status}
                                                             onChange={(e) => handleStatusChange(order._id, shopOrder.shop._id, e.target.value)}
                                                             className="appearance-none bg-indigo-50 text-indigo-700 text-xs font-black py-2 px-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer transition-all"
@@ -113,20 +113,20 @@ const OwnerOrderCart = ({ orders }) => {
                                                         </div>
                                                     ))}
                                                 </div>
+                                                {/* Footer */}
+                                                <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
+                                                    <div className="flex items-center gap-1 text-slate-400">
+                                                        <CreditCard size={14} />
+                                                        <span className="text-[10px] font-black uppercase tracking-widest">Total Bill</span>
+                                                    </div>
+                                                    <div className="text-xl font-black text-slate-900 tracking-tighter">
+                                                        ৳{shopOrder.subTotal}
+                                                    </div>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
 
-                                    {/* Footer */}
-                                    <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
-                                        <div className="flex items-center gap-1 text-slate-400">
-                                            <CreditCard size={14} />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Total Bill</span>
-                                        </div>
-                                        <div className="text-xl font-black text-slate-900 tracking-tighter">
-                                            ৳{order.totalAmount}
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
