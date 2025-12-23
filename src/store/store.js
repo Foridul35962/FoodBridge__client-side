@@ -5,15 +5,17 @@ import itemReducer from './slice/itemSlice.js'
 import cartReducer from './slice/cartSlice.js'
 import mapReducer from './slice/mapSlice.js'
 import orderReducer from './slice/orderSlice.js'
+import deliveryReducer from './slice/deliverySlice.js'
 
 const store = configureStore({
-    reducer:{
+    reducer: {
         auth: authReducer,
         shop: shopReducer,
         item: itemReducer,
         cart: cartReducer,
         map: mapReducer,
-        order: orderReducer
+        order: orderReducer,
+        delivery: deliveryReducer
     }
 })
 
