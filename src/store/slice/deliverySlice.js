@@ -1,7 +1,8 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}/api/order`
+const SERVER_URL_DELI = `${import.meta.env.VITE_SERVER_URL}/api/delivery`
 
 export const getDeliveryAssignment = createAsyncThunk(
     'delivery/getDeliveryAssignment',
@@ -19,10 +20,24 @@ export const getDeliveryAssignment = createAsyncThunk(
 
 export const acceptOrder = createAsyncThunk(
     'delivery/acceptOrder',
-    async(data, {rejectWithValue})=>{
+    async (data, { rejectWithValue }) => {
         try {
-            const res = axios.get(`${SERVER_URL}/accept-order/${data}`,
-                {withCredentials: true}
+            const res = await axios.get(`${SERVER_URL}/accept-order/${data}`,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const getCurrentOrder = createAsyncThunk(
+    'delivery/getCurrentOrder',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL_DELI}/get-current-order`,
+                { withCredentials: true }
             )
             return res.data
         } catch (error) {
@@ -33,7 +48,8 @@ export const acceptOrder = createAsyncThunk(
 
 const initialState = {
     deliveryLoading: false,
-    assainDelivery: []
+    assainDelivery: [],
+    currentOrder: null
 }
 
 const deliverySlice = createSlice({
@@ -63,6 +79,18 @@ const deliverySlice = createSlice({
                 state.assainDelivery = []
             })
             .addCase(acceptOrder.rejected, (state) => {
+                state.deliveryLoading = false
+            })
+        //current delivery order
+        builder
+            .addCase(getCurrentOrder.pending, (state) => {
+                state.deliveryLoading = true
+            })
+            .addCase(getCurrentOrder.fulfilled, (state, action) => {
+                state.deliveryLoading = false
+                state.currentOrder = action.payload.data
+            })
+            .addCase(getCurrentOrder.rejected, (state) => {
                 state.deliveryLoading = false
             })
     }
