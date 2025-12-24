@@ -1,20 +1,22 @@
 import React from 'react'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getDeliveryAssignment } from '../store/slice/deliverySlice'
+import { getCurrentOrder, getDeliveryAssignment } from '../store/slice/deliverySlice'
 import Loading from '../components/Loading'
 import DeliveryBoyHome from '../pages/deliveryBoy/DeliveryBoyHome'
+import CurrentOrder from '../pages/deliveryBoy/CurrentOrder'
 
 const DeliveryLayout = () => {
-  const { deliveryLoading } = useSelector((state) => state.delivery)
+  const { deliveryLoading, currentOrder } = useSelector((state) => state.delivery)
   const dispatch = useDispatch()
   useEffect(() => {
+    dispatch(getCurrentOrder())
     dispatch(getDeliveryAssignment())
-  }, [])
+  }, [dispatch])
   return (
     <>
       {
-        deliveryLoading ? <Loading /> : <DeliveryBoyHome />
+        deliveryLoading ? <Loading /> : currentOrder ? <CurrentOrder /> : <DeliveryBoyHome />
       }
     </>
   )

@@ -8,7 +8,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { toast } from 'react-toastify'
-import { acceptOrder } from '../../store/slice/deliverySlice';
+import { acceptOrder, getCurrentOrder } from '../../store/slice/deliverySlice';
 
 const DeliveryBoyHome = () => {
   const { assainDelivery } = useSelector((state) => state.delivery);
@@ -18,10 +18,12 @@ const DeliveryBoyHome = () => {
     try {
       await dispatch(acceptOrder(data)).unwrap()
       toast.success('order is accepted')
+      dispatch(getCurrentOrder())
     } catch (error) {
       console.log(error)
     }
   }
+
   return (
     <div className="min-h-screen bg-orange-50">
       {/* Top Professional Header */}
