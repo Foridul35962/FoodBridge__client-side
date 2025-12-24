@@ -1,23 +1,27 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { 
-  MapPin, 
-  Store, 
-  ShoppingBag, 
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  MapPin,
+  Store,
+  ShoppingBag,
   Navigation,
-  Clock, 
-  ChevronRight 
+  Clock,
+  ChevronRight
 } from 'lucide-react';
+import { toast } from 'react-toastify'
+import { acceptOrder } from '../../store/slice/deliverySlice';
 
 const DeliveryBoyHome = () => {
   const { assainDelivery } = useSelector((state) => state.delivery);
-  console.log(assainDelivery)
+  const dispatch = useDispatch()
 
-  // Total amount calculation logic
-  const calculateTotal = (items) => {
-    return items.reduce((total, item) => total + (item.price * item.quantity), 0);
-  };
-
+  const handleAcceptOrder = async (data) => {
+    try {
+      await dispatch(acceptOrder(data)).unwrap()
+      toast.success('order is accepted')
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="min-h-screen bg-orange-50">
       {/* Top Professional Header */}
@@ -30,7 +34,7 @@ const DeliveryBoyHome = () => {
             </p>
           </div>
           <div className="h-12 w-12 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-900/20">
-             <ShoppingBag size={24} />
+            <ShoppingBag size={24} />
           </div>
         </div>
       </div>
@@ -58,7 +62,7 @@ const DeliveryBoyHome = () => {
         {assainDelivery && assainDelivery.length > 0 ? (
           assainDelivery.map((order, index) => (
             <div key={index} className="bg-white rounded-4xl overflow-hidden shadow-sm border border-gray-100 transition-all hover:shadow-md">
-              
+
               {/* Card Header: Shop & Status */}
               <div className="p-6 pb-4 flex justify-between items-start">
                 <div className="flex gap-4">
@@ -81,8 +85,8 @@ const DeliveryBoyHome = () => {
                   <div key={idx} className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
                       <div className="relative">
-                        <img 
-                          src={itemObj.item?.image?.url || 'https://via.placeholder.com/80'} 
+                        <img
+                          src={itemObj.item?.image?.url || 'https://via.placeholder.com/80'}
                           className="w-16 h-16 rounded-2xl object-cover shadow-sm border border-white"
                           alt="food"
                         />
@@ -120,14 +124,16 @@ const DeliveryBoyHome = () => {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                  <button 
+                  <button
                     onClick={() => window.open(`https://www.google.com/maps?q=${order.deliveryAddress.latitude},${order.deliveryAddress.longitude}`)}
-                    className="flex-[0.3] bg-white border-2 border-slate-100 text-slate-600 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-active active:scale-95"
+                    className="flex-[0.3] bg-white border-2 cursor-pointer border-slate-100 text-slate-600 py-4 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-slate-50 transition-active active:scale-95"
                   >
                     <Navigation size={20} />
                   </button>
-                  <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-200 flex items-center justify-center gap-2 transition-all active:scale-95">
-                    Confirm Delivery <ChevronRight size={20} />
+                  <button
+                    onClick={() => handleAcceptOrder(order.assignmentId)}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 cursor-pointer rounded-2xl font-bold shadow-lg shadow-blue-200 flex items-center justify-center gap-2 transition-all active:scale-95">
+                    Accept Delivery <ChevronRight size={20} />
                   </button>
                 </div>
               </div>
@@ -135,13 +141,13 @@ const DeliveryBoyHome = () => {
           ))
         ) : (
           <div className="flex flex-col items-center justify-center pt-20">
-             <div className="bg-white p-8 rounded-[40px] shadow-sm mb-4">
-                <ShoppingBag size={48} className="text-slate-200" />
-             </div>
-             <p className="text-slate-500 font-bold text-lg">Waiting for Orders...</p>
-             <p className="text-slate-400 text-sm text-center px-10 mt-2 font-medium leading-relaxed">
-               New delivery requests will appear here in real-time.
-             </p>
+            <div className="bg-white p-8 rounded-[40px] shadow-sm mb-4">
+              <ShoppingBag size={48} className="text-slate-200" />
+            </div>
+            <p className="text-slate-500 font-bold text-lg">Waiting for Orders...</p>
+            <p className="text-slate-400 text-sm text-center px-10 mt-2 font-medium leading-relaxed">
+              New delivery requests will appear here in real-time.
+            </p>
           </div>
         )}
       </div>

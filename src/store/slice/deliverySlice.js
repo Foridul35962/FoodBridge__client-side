@@ -17,6 +17,20 @@ export const getDeliveryAssignment = createAsyncThunk(
     }
 )
 
+export const acceptOrder = createAsyncThunk(
+    'delivery/acceptOrder',
+    async(data, {rejectWithValue})=>{
+        try {
+            const res = axios.get(`${SERVER_URL}/accept-order/${data}`,
+                {withCredentials: true}
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 const initialState = {
     deliveryLoading: false,
     assainDelivery: []
@@ -34,10 +48,21 @@ const deliverySlice = createSlice({
             })
             .addCase(getDeliveryAssignment.fulfilled, (state, action) => {
                 state.deliveryLoading = false
-                console.log(action.payload.data)
                 state.assainDelivery = action.payload.data
             })
             .addCase(getDeliveryAssignment.rejected, (state) => {
+                state.deliveryLoading = false
+            })
+        //delivery accepted
+        builder
+            .addCase(acceptOrder.pending, (state) => {
+                state.deliveryLoading = true
+            })
+            .addCase(acceptOrder.fulfilled, (state, action) => {
+                state.deliveryLoading = false
+                state.assainDelivery = []
+            })
+            .addCase(acceptOrder.rejected, (state) => {
                 state.deliveryLoading = false
             })
     }
