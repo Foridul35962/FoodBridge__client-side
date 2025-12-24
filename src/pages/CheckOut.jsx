@@ -108,7 +108,7 @@ const CheckOut = () => {
             toast.success('CheckOut successful')
             setOrderPlaced(true)
         } catch (error) {
-            console.log(error)
+            toast.error(error.message)
         }
     }
 
