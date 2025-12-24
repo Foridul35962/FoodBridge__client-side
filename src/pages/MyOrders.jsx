@@ -10,16 +10,19 @@ const MyOrders = () => {
     const { orders } = useSelector((state) => state.order)
     const { user } = useSelector((state) => state.auth)
     useEffect(() => {
-        try {
-            dispatch(getMyOrders())
-        } catch (error) {
-            console.log(error)
+        const getMyOrder = async()=>{
+            try {
+                await dispatch(getMyOrders()).unwrap()
+            } catch (error) {
+                console.log(error)
+            }
         }
+        getMyOrder()
     }, [])
     return (
         <>
             {
-                user?.role === 'user' ? <UserOrderCart orders={orders}/> :
+                user?.role === 'user' && Array.isArray(orders) ? <UserOrderCart orders={orders}/> :
                     user?.role === 'owner' && <OwnerOrderCart orders={orders} />
             }
         </>
