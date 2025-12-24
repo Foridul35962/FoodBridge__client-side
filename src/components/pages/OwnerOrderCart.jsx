@@ -1,10 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux'
-import { Package, User, Phone, MapPin, Clock, CreditCard, ShoppingBag, ChevronDown } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { Package, Phone, MapPin, Clock, CreditCard, ShoppingBag, ChevronDown, Truck, Mail } from 'lucide-react';
 import { changeOrderStatus } from '../../store/slice/orderSlice';
 
 const OwnerOrderCart = ({ orders }) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     if (!orders || orders.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border-2 border-dashed border-slate-200">
@@ -16,9 +16,9 @@ const OwnerOrderCart = ({ orders }) => {
 
     const handleStatusChange = (orderId, shopId, status) => {
         try {
-            dispatch(changeOrderStatus({ orderId, shopId, status }))
+            dispatch(changeOrderStatus({ orderId, shopId, status }));
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     };
 
@@ -89,7 +89,7 @@ const OwnerOrderCart = ({ orders }) => {
                                                     <div className="relative">
                                                         <select
                                                             value={shopOrder.status}
-                                                            onChange={(e) => handleStatusChange(order._id, shopOrder.shop._id, e.target.value)}
+                                                            onChange={(e) => handleStatusChange(order._id, shopOrder.shop, e.target.value)}
                                                             className="appearance-none bg-indigo-50 text-indigo-700 text-xs font-black py-2 px-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer transition-all"
                                                         >
                                                             <option value="Pending">Pending</option>
@@ -99,6 +99,56 @@ const OwnerOrderCart = ({ orders }) => {
                                                         <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-700 pointer-events-none" />
                                                     </div>
                                                 </div>
+                                                {/* Delivery Candidates Selection */}
+                                                {shopOrder?.assignment?.status === "brodcasted" &&
+                                                    shopOrder.assignment.brodcastedTo?.length > 0 && (
+                                                        <div className="mt-4 border-2 border-dashed border-slate-200 rounded-3xl p-5 bg-slate-50/30">
+                                                            <div className="flex items-center justify-between mb-1">
+                                                                <div>
+                                                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                                                        Available Partners
+                                                                    </p>
+                                                                    <h4 className="text-sm font-bold text-slate-900">
+                                                                        Assign for Delivery
+                                                                    </h4>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="grid grid-cols-1 gap-1">
+                                                                {shopOrder.assignment.brodcastedTo.map((candidate) => (
+                                                                    <div>
+                                                                        <p className=" text-sm font-semibold">{candidate.fullName} -  {candidate.mobile}</p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                {/* NEW: Delivery Boy Details */}
+                                                {shopOrder.assignedDeliveryBoy && (
+                                                    <div className="p-4 bg-indigo-50/30 border border-indigo-100 rounded-2xl">
+                                                        <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-3 flex items-center gap-1">
+                                                            <Truck size={12} /> Delivery Partner
+                                                        </p>
+                                                        <div className="flex flex-wrap items-center justify-between gap-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-9 h-9 bg-white border border-indigo-200 text-indigo-600 rounded-full flex items-center justify-center font-bold text-sm shadow-sm">
+                                                                    {shopOrder.assignedDeliveryBoy.fullName?.charAt(0)}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-sm font-bold text-slate-800 leading-none">{shopOrder.assignedDeliveryBoy.fullName}</p>
+                                                                    <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+                                                                        <Mail size={10} /> {shopOrder.assignedDeliveryBoy.email}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <div className="bg-indigo-600 px-3 py-1.5 rounded-lg flex items-center gap-2 text-white shadow-sm">
+                                                                <Phone size={12} />
+                                                                <span className="text-xs font-bold">{shopOrder.assignedDeliveryBoy.mobile}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
 
                                                 {/* Items List */}
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -113,6 +163,7 @@ const OwnerOrderCart = ({ orders }) => {
                                                         </div>
                                                     ))}
                                                 </div>
+
                                                 {/* Footer */}
                                                 <div className="mt-8 pt-4 border-t border-slate-100 flex items-center justify-between">
                                                     <div className="flex items-center gap-1 text-slate-400">
@@ -126,7 +177,6 @@ const OwnerOrderCart = ({ orders }) => {
                                             </div>
                                         ))}
                                     </div>
-
                                 </div>
                             </div>
                         </div>
