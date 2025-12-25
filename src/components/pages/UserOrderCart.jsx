@@ -1,7 +1,9 @@
 import React from 'react';
 import { Package, MapPin, CreditCard, Store, Calendar } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const UserOrderCart = ({ orders }) => {
+    const navigate = useNavigate()
     if (!orders || orders.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center p-8 md:p-12 bg-gray-50 rounded-lg border-2 border-dashed">
@@ -31,7 +33,9 @@ const UserOrderCart = ({ orders }) => {
                             </div>
                             <div className="flex-1">
                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider leading-none mb-1">Order Ref</p>
-                                <p className="text-xs md:text-sm font-bold text-gray-800 tracking-tight truncate max-w-37.5 md:max-w-full">
+                                <p
+                                    onClick={() => navigate(`/order/${order._id}`)}
+                                    className="text-xs md:text-sm font-bold hover:underline cursor-pointer text-gray-800 tracking-tight truncate max-w-37.5 md:max-w-full">
                                     #{order._id.slice(-10).toUpperCase()}
                                 </p>
                             </div>
@@ -41,7 +45,7 @@ const UserOrderCart = ({ orders }) => {
                             <div>
                                 <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1">Date</p>
                                 <div className="flex items-center gap-1.5 text-xs md:text-sm font-semibold text-gray-600">
-                                    <Calendar size={14} /> 
+                                    <Calendar size={14} />
                                     {new Date(order.createdAt).toLocaleDateString()}
                                 </div>
                             </div>
@@ -73,11 +77,10 @@ const UserOrderCart = ({ orders }) => {
                                                 </div>
                                                 <h3 className="font-bold text-gray-800 tracking-tight text-sm md:text-base truncate">{shopOrder.shop.name}</h3>
                                             </div>
-                                            <span className={`text-[8px] md:text-[9px] px-2 py-0.5 rounded-full font-black tracking-widest uppercase border whitespace-nowrap ${
-                                                shopOrder.status === 'Pending'
-                                                    ? 'bg-amber-50 text-amber-600 border-amber-100'
-                                                    : 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                                            }`}>
+                                            <span className={`text-[8px] md:text-[9px] px-2 py-0.5 rounded-full font-black tracking-widest uppercase border whitespace-nowrap ${shopOrder.status === 'Pending'
+                                                ? 'bg-amber-50 text-amber-600 border-amber-100'
+                                                : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                }`}>
                                                 {shopOrder.status}
                                             </span>
                                         </div>

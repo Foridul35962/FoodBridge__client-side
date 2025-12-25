@@ -19,6 +19,7 @@ import Cart from './pages/Cart'
 import CheckOut from './pages/CheckOut'
 import MyOrders from './pages/MyOrders'
 import UseUpdateLocation from './hooks/UseUpdateLocation'
+import OrderDetails from './pages/user/OrderDetails'
 
 
 
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <ProtectedRoute role={'user'}> <Cart /> </ProtectedRoute>
+      },
+      {
+        path: '/order/:orderId',
+        element: <ProtectedRoute role={'user'}> <OrderDetails /> </ProtectedRoute>
       },
       {
         path: '/checkout',
