@@ -45,10 +45,25 @@ export const changeOrderStatus = createAsyncThunk(
     }
 )
 
+export const getOrderById = createAsyncThunk(
+    "order/getOrderById",
+    async(orderId, {rejectWithValue})=>{
+        try {
+            const res = await axios.get(`${SERVER_URL}/get-order/${orderId}`,
+                {withCredentials: true}
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 
 const initialState = {
     orderLoading: false,
-    orders: []
+    orders: [],
+    order: null
 }
 
 const orderSlice = createSlice({
@@ -94,6 +109,18 @@ const orderSlice = createSlice({
                 }
             })
             .addCase(changeOrderStatus.rejected, (state) => {
+                state.orderLoading = false
+            })
+        //get order by Id
+        builder
+            .addCase(getOrderById.pending, (state) => {
+                state.orderLoading = true
+            })
+            .addCase(getOrderById.fulfilled, (state, action) => {
+                state.orderLoading = false
+                state.order = action.payload.data
+            })
+            .addCase(getOrderById.rejected, (state) => {
                 state.orderLoading = false
             })
     }
