@@ -8,6 +8,7 @@ import DeliveryBoyTracking from '../../components/DeliveryBoyTracking'
 const OrderDetails = () => {
     const { orderId } = useParams()
     const { order } = useSelector((state) => state.order)
+    console.log(order)
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getOrderById(orderId))
@@ -65,7 +66,7 @@ const OrderDetails = () => {
                                         Call
                                     </a>
                                 </div>
-                            ) : (
+                            ) : shopOrder.status === "Out of delivery" && (
                                 <div className="bg-amber-50 rounded-xl p-4 border border-amber-100 flex items-center gap-3">
                                     <div className="animate-pulse bg-amber-200 w-3 h-3 rounded-full"></div>
                                     <p className="text-sm text-amber-700 font-medium font-italic">
@@ -74,16 +75,16 @@ const OrderDetails = () => {
                                 </div>
                             )}
                         </div>
-                        <DeliveryBoyTracking currentOrder={{
+                        {shopOrder.status === "Out of delivery" && <DeliveryBoyTracking currentOrder={{
                             deliveryBoyLocation: {
-                                lat: shopOrder.assignedDeliveryBoy.location.coordinates[1],
-                                lon: shopOrder.assignedDeliveryBoy.location.coordinates[0]
+                                lat: shopOrder.assignedDeliveryBoy?.location.coordinates[1],
+                                lon: shopOrder.assignedDeliveryBoy?.location.coordinates[0]
                             },
-                            customerLocation:{
+                            customerLocation: {
                                 lat: order.deliveryAddress.latitude,
                                 lon: order.deliveryAddress.longitude
                             }
-                        }} />
+                        }} />}
                     </div>
                 ))}
             </div>
