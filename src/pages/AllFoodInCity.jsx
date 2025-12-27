@@ -9,7 +9,7 @@ const AllFoodInCity = () => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams()
     const dispatch = useDispatch()
-    const { city } = useSelector(state => state.auth)
+    const { city, user } = useSelector(state => state.auth)
     const { searchItem, itemLoading } = useSelector(state => state.item)
 
     const queryParams = Object.fromEntries([...searchParams])
