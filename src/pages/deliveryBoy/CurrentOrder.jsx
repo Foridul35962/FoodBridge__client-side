@@ -1,19 +1,38 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import DeliveryBoyTracking from '../../components/DeliveryBoyTracking'
 import { ShieldCheck } from 'lucide-react'
+import { sendDeliveryOtp, verifyDeliveryOtp } from '../../store/slice/deliverySlice'
+import { toast } from 'react-toastify'
 
 const CurrentOrder = () => {
-  const { currentOrder } = useSelector((state) => state.delivery)
-  console.log(currentOrder)
+  const { currentOrder, deliveryOtpLoading } = useSelector((state) => state.delivery)
+  const dispatch = useDispatch()
   const [showOtpBox, setShowOtpBox] = useState(false)
 
-  const handleDelivered = () => {
-    setShowOtpBox(true)
+  const handleDelivered = async (orderId, shopOrderId) => {
+    try {
+      await dispatch(sendDeliveryOtp({ orderId, shopOrderId })).unwrap()
+      setShowOtpBox(true)
+      toast.success('otp sended')
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
-  const handleSubmit = () => {
-
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const data = {
+        orderId: currentOrder._id,
+        shopOrderId: currentOrder.shopOrder._id,
+        otp: e.target.otp.value
+      }
+      await dispatch(verifyDeliveryOtp(data)).unwrap()
+      toast.success('order delivery successfully')
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   return (
@@ -65,41 +84,45 @@ const CurrentOrder = () => {
       <DeliveryBoyTracking currentOrder={currentOrder} />
       <div className="p-3 flex items-center justify-center w-full">
         {showOtpBox ? (
-          <div className='flex flex-col gap-1 w-full'>
-            <div className="relative">
-              <label htmlFor="otp" className="text-md font-medium text-gray-700">
-                Otp sended customer <span className='font-bold text-orange-600'>{currentOrder.user.fullName}'s</span> email
+          <div className='flex flex-col gap-4 w-full'>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+              <label htmlFor="otp" className="text-sm md:text-md font-medium text-gray-700">
+                OTP sent to customer <span className='font-bold text-orange-600'>{currentOrder.user.fullName}'s</span> email
               </label>
 
-              <input
-                type="text"
-                id="otp"
-                inputMode="numeric"
-                name='otp'
-                maxLength={6}
-                placeholder="● ● ● ● ● ●"
-                className="w-full border border-gray-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-400 outline-none rounded-xl pl-6 pr-3 py-3 text-center tracking-widest font-semibold text-lg"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  id="otp"
+                  inputMode="numeric"
+                  name='otp'
+                  maxLength={6}
+                  placeholder="● ● ● ● ● ●"
+                  className="w-full border border-gray-300 focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none rounded-xl pl-12 pr-4 py-3 text-center tracking-widest font-bold text-xl transition-all"
+                  required
+                />
+                {/* OTP Icon - Input er bhitore thakbe */}
+                <ShieldCheck
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-orange-500 size-6"
+                />
+              </div>
 
-              {/* OTP Icon */}
-              <ShieldCheck
-                className="absolute left-3 bottom-3 text-orange-500 size-7"
-              />
-            </div>
-            <button
-              onClick={handleSubmit}
-              className="px-8 py-3 font-bold text-white transition-all cursor-pointer duration-200 bg-indigo-600 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 shadow-lg active:scale-95"
-            >
-              Submit Otp
-            </button>
+              <button
+                type='submit'
+                className="w-full py-3.5 font-bold text-white transition-all duration-200 bg-orange-600 rounded-xl hover:bg-orange-700 focus:ring-4 focus:ring-orange-200 shadow-md active:scale-[0.98] uppercase tracking-wide"
+              >
+                {deliveryOtpLoading ? 'Verifying..' : 'Verify Otp'}
+              </button>
+            </form>
           </div>
         ) : (
           <button
-            onClick={handleDelivered}
-            className="px-8 py-3 font-bold text-white transition-all cursor-pointer duration-200 bg-indigo-600 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 shadow-lg active:scale-95"
+            type='button'
+            disabled={deliveryOtpLoading}
+            onClick={() => handleDelivered(currentOrder._id, currentOrder.shopOrder._id)}
+            className={`px-8 py-3 font-bold text-white transition-all ${deliveryOtpLoading && 'cursor-not-allowed'} cursor-pointer duration-200 bg-indigo-600 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 hover:bg-indigo-700 shadow-lg active:scale-95`}
           >
-            Mark as Delivered
+            {deliveryOtpLoading ? 'Mark Delivering...' : 'Mark as Delivered'}
           </button>
         )}
       </div>
