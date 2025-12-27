@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const SERVER_URL = `${import.meta.env.VITE_SERVER_URL}/api/order`
@@ -46,8 +46,38 @@ export const getCurrentOrder = createAsyncThunk(
     }
 )
 
+export const sendDeliveryOtp = createAsyncThunk(
+    'delivery/sendDeliveryOtp',
+    async (data, { rejectWithValue }) => {
+        console.log(data)
+        try {
+            const res = await axios.post(`${SERVER_URL_DELI}/send-otp`, data,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
+export const verifyDeliveryOtp = createAsyncThunk(
+    'delivery/verifyDeliveryOtp',
+    async (data, { rejectWithValue }) => {
+        try {
+            const res = await axios.post(`${SERVER_URL_DELI}/verify-otp`, data,
+                { withCredentials: true }
+            )
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 const initialState = {
     deliveryLoading: false,
+    deliveryOtpLoading: false,
     assainDelivery: [],
     currentOrder: null
 }
@@ -92,6 +122,29 @@ const deliverySlice = createSlice({
             })
             .addCase(getCurrentOrder.rejected, (state) => {
                 state.deliveryLoading = false
+            })
+        //send delivery otp
+        builder
+            .addCase(sendDeliveryOtp.pending, (state) => {
+                state.deliveryOtpLoading = true
+            })
+            .addCase(sendDeliveryOtp.fulfilled, (state, action) => {
+                state.deliveryOtpLoading = false
+            })
+            .addCase(sendDeliveryOtp.rejected, (state) => {
+                state.deliveryOtpLoading = false
+            })
+        //verify delivery otp
+        builder
+            .addCase(verifyDeliveryOtp.pending, (state) => {
+                state.deliveryOtpLoading = true
+            })
+            .addCase(verifyDeliveryOtp.fulfilled, (state, action) => {
+                state.deliveryOtpLoading = false
+                state.currentOrder = null
+            })
+            .addCase(verifyDeliveryOtp.rejected, (state) => {
+                state.deliveryOtpLoading = false
             })
     }
 })
