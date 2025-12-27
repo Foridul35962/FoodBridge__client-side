@@ -53,8 +53,8 @@ const router = createBrowserRouter([
         element: <Food />
       },
       {
-        path: '/all-foods',
-        element: <ProtectedRoute role={'user'}> <AllFoodInCity /> </ProtectedRoute>
+        path: '/all-foods/all',
+        element: <AllFoodInCity />
       },
       {
         path: '/cart',

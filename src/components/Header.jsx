@@ -56,6 +56,15 @@ const Header = () => {
         }
     }
 
+    const [searchItem, setSerchItem] = useState('')
+    const handleSearch = () => {
+        if (searchItem.trim()) {
+            navigate(`/all-foods/all?search=${searchItem}`)
+        } else {
+            navigate(`/all-foods/all`)
+        }
+    }
+
     return (
         <>
             <div>
@@ -69,19 +78,25 @@ const Header = () => {
                         </div>
 
                         {/* Search Bar (Desktop) */}
-                        <div className="hidden sm:flex items-center w-1/2 bg-white rounded-md shadow px-3 py-2 gap-2">
-                            <div onClick={() => setShowLocationMenu(true)} title='set location' className="flex cursor-pointer items-center gap-1 text-gray-500 text-sm pr-3 border-r">
-                                <MapPin size={16} className="text-orange-500" />
-                                {city}
-                            </div>
+                        {
+                            user?.role === 'user' &&
+                            <div className="hidden sm:flex items-center w-1/2 bg-white rounded-md shadow px-3 py-2 gap-2">
+                                <div onClick={() => setShowLocationMenu(true)} title='set location' className="flex cursor-pointer items-center gap-1 text-gray-500 text-sm pr-3 border-r">
+                                    <MapPin size={16} className="text-orange-500" />
+                                    {city}
+                                </div>
 
-                            <Search size={16} className="text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="search delicious food..."
-                                className="w-full outline-none text-sm"
-                            />
-                        </div>
+                                <Search size={16} className="text-gray-400" />
+                                <input
+                                    type="text"
+                                    value={searchItem}
+                                    onChange={(e) => setSerchItem(e.target.value)}
+                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                    placeholder="search delicious food..."
+                                    className="w-full outline-none text-sm"
+                                />
+                            </div>
+                        }
 
                         {/* Right Section */}
                         <div className="flex items-center gap-4">
@@ -156,11 +171,6 @@ const Header = () => {
                                                     </button>
                                                 }
 
-                                                <button className="w-full cursor-pointer flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
-                                                    <User size={16} />
-                                                    Profile
-                                                </button>
-
                                                 <button
                                                     onClick={handleLogout}
                                                     className="w-full flex cursor-pointer items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 text-red-500">
@@ -189,6 +199,9 @@ const Header = () => {
                             <Search size={16} className="text-gray-400" />
                             <input
                                 type="text"
+                                value={searchItem}
+                                onChange={(e) => setSerchItem(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                 placeholder="search delicious food..."
                                 className="w-full outline-none text-sm"
                             />

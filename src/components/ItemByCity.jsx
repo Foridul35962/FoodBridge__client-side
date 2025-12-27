@@ -12,7 +12,7 @@ const ItemByCity = () => {
 
     const handleViewItems = () => {
         if (user) {
-            navigate('/all-foods')
+            navigate('/all-foods/all')
         } else {
             navigate('/login')
         }

@@ -73,13 +73,31 @@ export const getItemById = createAsyncThunk(
     }
 )
 
+export const searchItems = createAsyncThunk(
+    'item/searchItem',
+    async (data, { rejectWithValue }) => {
+        const query = new URLSearchParams()
+        query.append("city", data.city)
+        if (data.search) {
+            query.append("query", data.search)
+        }
+        try {
+            const res = await axios.get(`${SERVER_URL}/search-items?${query.toString()}`)
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 
 const initialState = {
     itemLoading: false,
     allItem: [],
     item: null,
     reletedItem: [],
-    uniqueCategoryItems: []
+    uniqueCategoryItems: [],
+    searchItem: []
 }
 
 const itemSlice = createSlice({
@@ -142,7 +160,7 @@ const itemSlice = createSlice({
             .addCase(getAllItem.rejected, (state) => {
                 state.itemLoading = false
             })
-        
+
         //get item by id
         builder
             .addCase(getItemById.pending, (state) => {
@@ -153,6 +171,19 @@ const itemSlice = createSlice({
                 state.item = action.payload.data
             })
             .addCase(getItemById.rejected, (state) => {
+                state.itemLoading = false
+            })
+
+        //search item
+        builder
+            .addCase(searchItems.pending, (state) => {
+                state.itemLoading = true
+            })
+            .addCase(searchItems.fulfilled, (state, action) => {
+                state.itemLoading = false
+                state.searchItem = action.payload.data
+            })
+            .addCase(searchItems.rejected, (state) => {
                 state.itemLoading = false
             })
     }
