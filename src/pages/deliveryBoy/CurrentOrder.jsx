@@ -4,11 +4,50 @@ import DeliveryBoyTracking from '../../components/DeliveryBoyTracking'
 import { ShieldCheck } from 'lucide-react'
 import { sendDeliveryOtp, verifyDeliveryOtp } from '../../store/slice/deliverySlice'
 import { toast } from 'react-toastify'
+import { useEffect } from 'react'
 
 const CurrentOrder = () => {
   const { currentOrder, deliveryOtpLoading } = useSelector((state) => state.delivery)
+  const { user, socket } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const [showOtpBox, setShowOtpBox] = useState(false)
+  const [deliveryBoyLocation, setDeliveryBoyLocation] = useState(null)
+
+
+  useEffect(() => {
+    if (!socket) {
+      return
+    }
+
+    let watchId
+
+    if (navigator.geolocation) {
+      watchId = navigator.geolocation.watchPosition((position) => {
+        const latitude = position.coords.latitude
+        const longitude = position.coords.longitude
+
+        setDeliveryBoyLocation({lat: latitude, lon: longitude})
+
+        socket.emit('updateLocation', {
+          latitude,
+          longitude,
+          userId: user._id
+        })
+      }),
+        (error) => {
+          console.log(error)
+        },
+      {
+        enableHighAccuracy: true
+      }
+    }
+
+    return () => {
+      if (watchId) {
+        navigator.geolocation.clearWatch(watchId)
+      }
+    }
+  }, [socket, user])
 
   const handleDelivered = async (orderId, shopOrderId) => {
     try {
@@ -81,7 +120,16 @@ const CurrentOrder = () => {
           </div>
         </div>
       </div>
-      <DeliveryBoyTracking currentOrder={currentOrder} />
+      <DeliveryBoyTracking currentOrder={{
+        deliveryBoyLocation: deliveryBoyLocation || {
+          lat: user?.location?.coordinates[1],
+          lon: user?.location?.coordinates[0]
+        },
+        customerLocation: {
+          lat: currentOrder?.deliveryAddress?.latitude,
+          lon: currentOrder?.deliveryAddress?.longitude
+        }
+      }} />
       <div className="p-3 flex items-center justify-center w-full">
         {showOtpBox ? (
           <div className='flex flex-col gap-4 w-full'>
