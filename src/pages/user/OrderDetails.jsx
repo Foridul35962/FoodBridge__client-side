@@ -4,15 +4,42 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { getOrderById } from '../../store/slice/orderSlice'
 import DeliveryBoyTracking from '../../components/DeliveryBoyTracking'
+import { useState } from 'react'
 
 const OrderDetails = () => {
     const { orderId } = useParams()
     const { order } = useSelector((state) => state.order)
-    console.log(order)
+    const { socket } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleOrderUpdate = (data) => {
+            if (data.orderId === orderId) {
+                dispatch(getOrderById(orderId)); // fetch updated shopOrder info
+            }
+        };
+
+        socket.on('orderStatusUpdated', handleOrderUpdate);
+
+        return () => socket.off('orderStatusUpdated', handleOrderUpdate);
+    }, [socket, dispatch, orderId]);
+
     useEffect(() => {
         dispatch(getOrderById(orderId))
     }, [])
+
+    const [liveLocation, setLiveLocation] = useState({})
+    useEffect(()=>{
+        socket.on('updateDeliveryLocation', ({deliveryBoyId, latitude, longitude})=>{
+            setLiveLocation(prev=>({
+                ...prev,
+                [deliveryBoyId]: {lat: latitude, lon: longitude}
+            }))
+        })
+    },[])
+
+
     return (
         <div className="max-w-2xl sm:w-xl md:w-2xl mx-auto p-4 sm:p-6 min-h-screen">
             <h1 className="text-2xl font-extrabold text-gray-900 mb-6 flex items-center">
@@ -75,14 +102,14 @@ const OrderDetails = () => {
                                 </div>
                             )}
                         </div>
-                        {shopOrder.status === "Out of delivery" && <DeliveryBoyTracking currentOrder={{
-                            deliveryBoyLocation: {
-                                lat: shopOrder.assignedDeliveryBoy?.location.coordinates[1],
-                                lon: shopOrder.assignedDeliveryBoy?.location.coordinates[0]
+                        {shopOrder.status === "Out of delivery" && shopOrder.assignedDeliveryBoy && <DeliveryBoyTracking currentOrder={{
+                            deliveryBoyLocation: liveLocation[shopOrder.assignedDeliveryBoy._id] || {
+                                lat: shopOrder?.assignedDeliveryBoy?.location.coordinates[1],
+                                lon: shopOrder?.assignedDeliveryBoy?.location.coordinates[0]
                             },
                             customerLocation: {
-                                lat: order.deliveryAddress.latitude,
-                                lon: order.deliveryAddress.longitude
+                                lat: order?.deliveryAddress.latitude,
+                                lon: order?.deliveryAddress.longitude
                             }
                         }} />}
                     </div>
