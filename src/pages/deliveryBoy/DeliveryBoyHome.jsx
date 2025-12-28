@@ -8,11 +8,39 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { toast } from 'react-toastify'
-import { acceptOrder, getCurrentOrder } from '../../store/slice/deliverySlice';
+import { acceptOrder, getCurrentOrder, getDeliveryAssignment } from '../../store/slice/deliverySlice';
+import { useEffect } from 'react';
 
 const DeliveryBoyHome = () => {
   const { assainDelivery } = useSelector((state) => state.delivery);
+  const { socket } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
+
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewDelivery = (data) => {
+      dispatch(getDeliveryAssignment()); 
+      playNotificationSound();
+    };
+
+    const handleStatusUpdate = () => {
+      dispatch(getDeliveryAssignment());
+      dispatch(getCurrentOrder());
+    };
+
+    socket.on("newDeliveryRequest", handleNewDelivery);
+    socket.on("orderStatusUpdated", handleStatusUpdate);
+
+    return () => {
+      socket.off("newDeliveryRequest", handleNewDelivery);
+      socket.off("orderStatusUpdated", handleStatusUpdate);
+    };
+  }, [socket, dispatch]);
+
+
+
 
   const handleAcceptOrder = async (data) => {
     try {
