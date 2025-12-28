@@ -1,10 +1,27 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Package, Phone, MapPin, Clock, CreditCard, ShoppingBag, ChevronDown, Truck, Mail } from 'lucide-react';
-import { changeOrderStatus } from '../../store/slice/orderSlice';
+import { changeOrderStatus, getMyOrders } from '../../store/slice/orderSlice';
 
 const OwnerOrderCart = ({ orders }) => {
     const dispatch = useDispatch();
+    const { socket } = useSelector((state) => state.auth)
+
+    useEffect(() => {
+        if (!socket) return;
+
+        const handleOrderUpdate = () => dispatch(getMyOrders());
+
+        socket.on("newOrder", handleOrderUpdate);
+        socket.on("orderStatusUpdated", handleOrderUpdate);
+
+        return () => {
+            socket.off("newOrder", handleOrderUpdate);
+            socket.off("orderStatusUpdated", handleOrderUpdate);
+        };
+    }, [socket, dispatch]);
+
+
     if (!orders || orders.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center p-12 bg-white rounded-3xl border-2 border-dashed border-slate-200">
@@ -86,18 +103,27 @@ const OwnerOrderCart = ({ orders }) => {
                                                 {/* Status Selector */}
                                                 <div className="flex items-center justify-between bg-white border border-indigo-100 p-3 rounded-2xl shadow-sm">
                                                     <span className="text-xs font-bold text-slate-500 uppercase ml-2 tracking-tighter">Current Status</span>
-                                                    <div className="relative">
-                                                        <select
-                                                            value={shopOrder.status}
-                                                            onChange={(e) => handleStatusChange(order._id, shopOrder.shop, e.target.value)}
-                                                            className="appearance-none bg-indigo-50 text-indigo-700 text-xs font-black py-2 px-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer transition-all"
-                                                        >
-                                                            <option value="Pending">Pending</option>
-                                                            <option value="Preparing">Preparing</option>
-                                                            <option value="Out of delivery">Out of delivery</option>
-                                                        </select>
-                                                        <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-700 pointer-events-none" />
-                                                    </div>
+                                                    {
+                                                        shopOrder.status === 'Delivered' ?
+                                                            <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-4 py-2 rounded-xl border border-emerald-100 shadow-sm ring-1 ring-emerald-500/10">
+                                                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                                                <span className="text-xs font-black uppercase tracking-tight">
+                                                                    {shopOrder.status}
+                                                                </span>
+                                                            </div> :
+                                                            <div className="relative">
+                                                                <select
+                                                                    value={shopOrder.status}
+                                                                    onChange={(e) => handleStatusChange(order._id, shopOrder.shop, e.target.value)}
+                                                                    className="appearance-none bg-indigo-50 text-indigo-700 text-xs font-black py-2 px-4 pr-10 rounded-xl outline-none focus:ring-2 focus:ring-indigo-400 cursor-pointer transition-all"
+                                                                >
+                                                                    <option value="Pending">Pending</option>
+                                                                    <option value="Preparing">Preparing</option>
+                                                                    <option value="Out of delivery">Out of delivery</option>
+                                                                </select>
+                                                                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-indigo-700 pointer-events-none" />
+                                                            </div>
+                                                    }
                                                 </div>
                                                 {/* Delivery Candidates Selection */}
                                                 {shopOrder?.assignment?.status === "brodcasted" &&
