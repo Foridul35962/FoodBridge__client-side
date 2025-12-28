@@ -127,7 +127,8 @@ const initialState = {
     user: null,
     address: null,
     state: null,
-    city: null
+    city: null,
+    socket: null
 }
 
 const authSlice = createSlice({
@@ -142,6 +143,9 @@ const authSlice = createSlice({
         },
         setCity: (state, action) => {
             state.city = action.payload
+        },
+        setSocket: (state, action) => {
+            state.socket = action.payload
         }
     },
     extraReducers: (builder) => {
@@ -257,5 +261,5 @@ const authSlice = createSlice({
     }
 })
 
-export const { setAddress, setState, setCity } = authSlice.actions
+export const { setAddress, setState, setCity, setSocket } = authSlice.actions
 export default authSlice.reducer
