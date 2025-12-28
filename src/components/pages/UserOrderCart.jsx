@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Package, MapPin, CreditCard, Store, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getMyOrders } from '../../store/slice/orderSlice';
 
 const UserOrderCart = ({ orders }) => {
     const navigate = useNavigate()
+    const { socket } = useSelector((state) => state.auth)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        if (!socket) return;
+        const handleStatusUpdate = ({ orderId, shopOrderId, status }) => {
+            dispatch(getMyOrders());
+        };
+        socket.on("orderStatusUpdated", handleStatusUpdate);
+        return () => socket.off("orderStatusUpdated", handleStatusUpdate);
+    }, [socket]);
+
+
+
     if (!orders || orders.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center p-8 md:p-12 bg-gray-50 rounded-lg border-2 border-dashed">
