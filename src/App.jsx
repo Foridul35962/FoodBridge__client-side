@@ -20,6 +20,7 @@ import CheckOut from './pages/CheckOut'
 import MyOrders from './pages/MyOrders'
 import UseUpdateLocation from './hooks/UseUpdateLocation'
 import OrderDetails from './pages/user/OrderDetails'
+import UseSocket from './hooks/UseSocket'
 
 
 
@@ -94,6 +95,7 @@ const App = () => {
   UseGetUser()
   useGetCity()
   UseUpdateLocation()
+  UseSocket()
 
   return (
     <>
