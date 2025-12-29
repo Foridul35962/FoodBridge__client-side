@@ -5,10 +5,11 @@ import { ShieldCheck } from 'lucide-react'
 import { sendDeliveryOtp, verifyDeliveryOtp } from '../../store/slice/deliverySlice'
 import { toast } from 'react-toastify'
 import { useEffect } from 'react'
+import socket from '../../socket'
 
 const CurrentOrder = () => {
   const { currentOrder, deliveryOtpLoading } = useSelector((state) => state.delivery)
-  const { user, socket } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
   const [showOtpBox, setShowOtpBox] = useState(false)
   const [deliveryBoyLocation, setDeliveryBoyLocation] = useState(null)

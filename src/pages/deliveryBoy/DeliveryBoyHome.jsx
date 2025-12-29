@@ -10,10 +10,10 @@ import {
 import { toast } from 'react-toastify'
 import { acceptOrder, getCurrentOrder, getDeliveryAssignment } from '../../store/slice/deliverySlice';
 import { useEffect } from 'react';
+import socket from '../../socket';
 
 const DeliveryBoyHome = () => {
   const { assainDelivery } = useSelector((state) => state.delivery);
-  const { socket } = useSelector((state) => state.auth)
   const dispatch = useDispatch()
 
 

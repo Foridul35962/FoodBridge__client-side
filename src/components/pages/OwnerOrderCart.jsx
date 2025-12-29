@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Package, Phone, MapPin, Clock, CreditCard, ShoppingBag, ChevronDown, Truck, Mail } from 'lucide-react';
 import { changeOrderStatus, getMyOrders } from '../../store/slice/orderSlice';
+import socket from '../../socket';
+import { toast } from 'react-toastify'
 
 const OwnerOrderCart = ({ orders }) => {
     const dispatch = useDispatch();
-    const { socket } = useSelector((state) => state.auth)
 
     useEffect(() => {
         if (!socket) return;
@@ -35,7 +36,7 @@ const OwnerOrderCart = ({ orders }) => {
         try {
             dispatch(changeOrderStatus({ orderId, shopId, status }));
         } catch (error) {
-            console.log(error);
+            toast.error(error.message)
         }
     };
 

@@ -5,11 +5,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getOrderById } from '../../store/slice/orderSlice'
 import DeliveryBoyTracking from '../../components/DeliveryBoyTracking'
 import { useState } from 'react'
+import socket from '../../socket'
 
 const OrderDetails = () => {
     const { orderId } = useParams()
     const { order } = useSelector((state) => state.order)
-    const { socket } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
     useEffect(() => {
         if (!socket) return;

@@ -3,10 +3,10 @@ import { Package, MapPin, CreditCard, Store, Calendar } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMyOrders } from '../../store/slice/orderSlice';
+import socket from '../../socket';
 
 const UserOrderCart = ({ orders }) => {
     const navigate = useNavigate()
-    const { socket } = useSelector((state) => state.auth)
     const dispatch = useDispatch()
 
     useEffect(() => {
