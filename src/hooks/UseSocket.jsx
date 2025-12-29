@@ -1,28 +1,35 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setSocket } from '../store/slice/authSlice'
-import { io } from 'socket.io-client'
+import { setSocketConnected } from '../store/slice/authSlice'
+import socket from '../socket'
 
 const UseSocket = () => {
     const dispatch = useDispatch()
-    const {user} = useSelector((state)=>state.auth)
+    const { user } = useSelector((state) => state.auth)
+
     useEffect(() => {
-        const socketInstance = io(import.meta.env.VITE_SERVER_URL, {
-            withCredentials: true
+        if (!user) return
+
+        if (!socket.connected) {
+            socket.connect()
+        }
+
+        socket.on('connect', () => {
+            dispatch(setSocketConnected(true))
+            socket.emit('identity', { userId: user._id })
         })
 
-        dispatch(setSocket(socketInstance))
-
-        socketInstance.on('connect', ()=>{
-            if (user) {
-                socketInstance.emit('identity', {userId: user._id})
-            }
+        socket.on('disconnect', () => {
+            dispatch(setSocketConnected(false))
         })
 
-        return ()=>{
-            socketInstance.disconnect()
+        return () => {
+            socket.off('connect')
+            socket.off('disconnect')
         }
     }, [user?._id])
+
+    return null
 }
 
 export default UseSocket
