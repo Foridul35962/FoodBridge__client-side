@@ -75,11 +75,26 @@ export const verifyDeliveryOtp = createAsyncThunk(
     }
 )
 
+export const getTodayDeliveries = createAsyncThunk(
+    'delivery/getTodayDeliveries',
+    async (_, { rejectWithValue }) => {
+        try {
+            const res = await axios.get(`${SERVER_URL_DELI}/todays-deliveries`, {
+                withCredentials: true
+            })
+            return res.data
+        } catch (error) {
+            return rejectWithValue(error?.response?.data || "Something went wrong")
+        }
+    }
+)
+
 const initialState = {
     deliveryLoading: false,
     deliveryOtpLoading: false,
     assainDelivery: [],
-    currentOrder: null
+    currentOrder: null,
+    todaysDeliveries: []
 }
 
 const deliverySlice = createSlice({
@@ -144,6 +159,18 @@ const deliverySlice = createSlice({
                 state.currentOrder = null
             })
             .addCase(verifyDeliveryOtp.rejected, (state) => {
+                state.deliveryOtpLoading = false
+            })
+        //verify delivery otp
+        builder
+            .addCase(getTodayDeliveries.pending, (state) => {
+                state.deliveryOtpLoading = true
+            })
+            .addCase(getTodayDeliveries.fulfilled, (state, action) => {
+                state.deliveryOtpLoading = false
+                state.todaysDeliveries = action.payload.data
+            })
+            .addCase(getTodayDeliveries.rejected, (state) => {
                 state.deliveryOtpLoading = false
             })
     }
