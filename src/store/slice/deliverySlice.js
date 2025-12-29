@@ -49,7 +49,6 @@ export const getCurrentOrder = createAsyncThunk(
 export const sendDeliveryOtp = createAsyncThunk(
     'delivery/sendDeliveryOtp',
     async (data, { rejectWithValue }) => {
-        console.log(data)
         try {
             const res = await axios.post(`${SERVER_URL_DELI}/send-otp`, data,
                 { withCredentials: true }
