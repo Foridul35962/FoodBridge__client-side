@@ -164,7 +164,7 @@ const Header = () => {
                                             <div className="py-2">
                                                 {
                                                     <button
-                                                        onClick={() => navigate('/my-orders')}
+                                                        onClick={() => {navigate('/my-orders'); setShowUserMenu(!showUserMenu)}}
                                                         className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
                                                         <ShoppingBag size={16} />
                                                         My Orders
