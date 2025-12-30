@@ -21,6 +21,7 @@ import MyOrders from './pages/MyOrders'
 import UseUpdateLocation from './hooks/UseUpdateLocation'
 import OrderDetails from './pages/user/OrderDetails'
 import UseSocket from './hooks/UseSocket'
+import Error from './pages/Error'
 
 
 
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
         element: <ProtectedRoute role={'owner'}> <AddEditFood /> </ProtectedRoute>
       },
     ]
+  },
+  {
+    path: '/*',
+    element: <Error />
   }
 ])
 
