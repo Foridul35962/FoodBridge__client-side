@@ -125,11 +125,13 @@ const Header = () => {
                             }
 
                             {/* Orders */}
-                            <div
-                                onClick={() => navigate('/my-orders')}
-                                className={`cursor-pointer hidden sm:block ${!user && 'hidden'}`}>
-                                <ShoppingBag className='size-5 text-orange-500' />
-                            </div>
+                            {user &&
+                                <div
+                                    onClick={() => navigate('/my-orders')}
+                                    className={`cursor-pointer hidden sm:block ${!user && 'hidden'}`}>
+                                    <ShoppingBag className='size-5 text-orange-500' />
+                                </div>
+                            }
 
                             {/* Mobile Search Toggle */}
                             <button
@@ -164,7 +166,7 @@ const Header = () => {
                                             <div className="py-2">
                                                 {
                                                     <button
-                                                        onClick={() => {navigate('/my-orders'); setShowUserMenu(!showUserMenu)}}
+                                                        onClick={() => { navigate('/my-orders'); setShowUserMenu(!showUserMenu) }}
                                                         className="w-full sm:hidden flex items-center gap-2 px-4 py-2 text-sm hover:bg-orange-50 text-gray-700">
                                                         <ShoppingBag size={16} />
                                                         My Orders
