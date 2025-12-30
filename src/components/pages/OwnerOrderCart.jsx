@@ -32,9 +32,9 @@ const OwnerOrderCart = ({ orders }) => {
         );
     }
 
-    const handleStatusChange = (orderId, shopId, status) => {
+    const handleStatusChange = async (orderId, shopId, status) => {
         try {
-            dispatch(changeOrderStatus({ orderId, shopId, status }));
+            await dispatch(changeOrderStatus({ orderId, shopId, status })).unwrap()
         } catch (error) {
             toast.error(error.message)
         }
@@ -142,8 +142,8 @@ const OwnerOrderCart = ({ orders }) => {
                                                             </div>
 
                                                             <div className="grid grid-cols-1 gap-1">
-                                                                {shopOrder.assignment.brodcastedTo.map((candidate) => (
-                                                                    <div>
+                                                                {shopOrder.assignment.brodcastedTo.map((candidate, idx) => (
+                                                                    <div key={idx}>
                                                                         <p className=" text-sm font-semibold">{candidate.fullName} -  {candidate.mobile}</p>
                                                                     </div>
                                                                 ))}

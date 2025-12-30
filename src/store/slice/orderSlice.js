@@ -97,19 +97,12 @@ const orderSlice = createSlice({
             })
         //change status
         builder
-            .addCase(changeOrderStatus.pending, (state) => {
-                state.orderLoading = true
-            })
             .addCase(changeOrderStatus.fulfilled, (state, action) => {
-                state.orderLoading = false
                 const updatedOrder = action.payload.data
                 const index = state.orders.findIndex((order)=>order._id === updatedOrder._id)
                 if (index > -1) {
                     state.orders[index] = updatedOrder
                 }
-            })
-            .addCase(changeOrderStatus.rejected, (state) => {
-                state.orderLoading = false
             })
         //get order by Id
         builder
